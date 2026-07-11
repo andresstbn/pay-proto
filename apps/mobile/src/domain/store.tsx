@@ -107,6 +107,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           initial: (data.displayName || 'U').charAt(0).toUpperCase(),
           balanceInCents: data.balanceInCents ?? 0,
           currency: data.currency || 'EUR',
+          photoUrl: data.photoUrl || '',
         };
       });
       setState((s) => ({ ...s, users: usersMap }));

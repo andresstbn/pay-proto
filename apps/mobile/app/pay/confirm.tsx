@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { Button, Card, formatEuros, Screen, Txt } from '../../src/components/ui';
+import { Avatar, Button, Card, formatEuros, Screen, Txt } from '../../src/components/ui';
 import { liveStatus, useProtectedUser, useStore } from '../../src/domain/store';
 import { colors, spacing } from '../../src/theme/theme';
 
@@ -88,11 +88,20 @@ export default function Confirm() {
         </Card>
       ) : (
         <>
-          <Card style={{ gap: spacing.sm }}>
-            <Txt variant="caption" color={colors.gray500}>Pagar a</Txt>
-            <Txt variant="title">{recipient!.displayName}</Txt>
-            <Txt variant="display">{formatEuros(amountInCents)}</Txt>
-            {!!concept && <Txt variant="body" color={colors.gray500}>{concept}</Txt>}
+          <Card style={{ gap: spacing.sm, alignItems: 'center', paddingVertical: spacing.xl }}>
+            <Avatar user={recipient} size={64} style={{ borderWidth: 1.5, borderColor: colors.cyan400 }} />
+            <View style={{ alignItems: 'center', marginTop: spacing.xs }}>
+              <Txt variant="caption" color={colors.gray500}>Vas a pagar a</Txt>
+              <Txt variant="subtitle" style={{ fontWeight: '700', fontSize: 18 }}>{recipient!.displayName}</Txt>
+            </View>
+            <Txt variant="display" style={{ fontSize: 36, fontWeight: '800', marginVertical: spacing.xs }}>
+              {formatEuros(amountInCents)}
+            </Txt>
+            {!!concept && (
+              <View style={{ backgroundColor: colors.gray50, paddingHorizontal: spacing.md, paddingVertical: 4, borderRadius: 12 }}>
+                <Txt variant="body" color={colors.gray500}>{concept}</Txt>
+              </View>
+            )}
           </Card>
 
           <Card style={{ gap: spacing.xs }}>

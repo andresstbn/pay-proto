@@ -6,6 +6,7 @@ export interface User {
   initial: string;
   balanceInCents: number;
   currency: Currency;
+  photoUrl?: string;
 }
 
 export type OneTimeStatus = 'pending' | 'paid' | 'expired' | 'cancelled';

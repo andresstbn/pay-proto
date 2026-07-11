@@ -7,12 +7,83 @@ import {
   TextStyle,
   View,
   ViewStyle,
+  Image,
 } from 'react-native';
 import { colors, radius, shadow, spacing, typography } from '../theme/theme';
+import { User } from '../domain/types';
 
 export function Screen({ children, style, dark }: { children: ReactNode; style?: ViewStyle; dark?: boolean }) {
   return (
     <View style={[styles.screen, dark && styles.screenDark, style]}>{children}</View>
+  );
+}
+
+export function Avatar({ user, size = 36, style }: { user?: User | null; size?: number; style?: ViewStyle }) {
+  if (!user) {
+    return (
+      <View
+        style={[
+          {
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            backgroundColor: colors.gray200,
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+          style,
+        ]}
+      />
+    );
+  }
+
+  const initial = user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U';
+
+  if (user.photoUrl) {
+    return (
+      <Image
+        source={{ uri: user.photoUrl }}
+        style={[
+          {
+            width: size,
+            height: size,
+            borderRadius: size / 2,
+            backgroundColor: colors.gray200,
+          },
+          style as any,
+        ]}
+      />
+    );
+  }
+
+  return (
+    <View
+      style={[
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: colors.blue600,
+          alignItems: 'center',
+          justifyContent: 'center',
+        },
+        style,
+      ]}
+    >
+      <Text
+        style={[
+          typography.subtitle,
+          {
+            color: colors.white,
+            fontSize: size * 0.42,
+            fontWeight: '700',
+            textAlign: 'center',
+          },
+        ]}
+      >
+        {initial}
+      </Text>
+    </View>
   );
 }
 

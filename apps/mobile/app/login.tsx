@@ -2,6 +2,7 @@ import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, TextInput, View, Platform, ActivityIndicator } from 'react-native';
 import { Button, Txt } from '../src/components/ui';
+import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../src/domain/store';
 import { colors, radius, spacing } from '../src/theme/theme';
 
@@ -81,7 +82,7 @@ export default function Login() {
                     justifyContent: 'center',
                   }}
                 >
-                  <Txt variant="body" color={colors.white} style={{ fontWeight: '700' }}>G</Txt>
+                  <Ionicons name="logo-google" size={16} color={colors.white} />
                 </View>
                 <Txt variant="subtitle" color={colors.gray900}>Continuar con Google</Txt>
               </Pressable>

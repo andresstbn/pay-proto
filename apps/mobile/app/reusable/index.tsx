@@ -37,7 +37,10 @@ export default function ReusableList() {
                 <Button
                   title="Desactivar"
                   variant="outline"
-                  onPress={() => deactivateReusable({ qrId: q.id, ownerId: user.id })}
+                  onPress={async () => {
+                    const res = await deactivateReusable({ qrId: q.id });
+                    if (!res.ok) alert(res.error);
+                  }}
                 />
               )}
             </Card>
