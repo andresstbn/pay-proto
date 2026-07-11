@@ -61,12 +61,16 @@ export default function Confirm() {
   if (!blockedReason && !recipient) blockedReason = 'Usuario receptor inexistente.';
   if (!blockedReason && recipientId === user.id) blockedReason = 'No puedes pagarte a ti mismo.';
 
-  function confirm() {
+  async function confirm() {
+    setError(null);
     let result;
-    if (params.kind === 'one_time') result = payOneTime({ requestId: params.requestId!, payerId: user!.id });
-    else if (params.kind === 'personal')
-      result = payPersonal({ recipientId: recipientId!, payerId: user!.id, amountInCents, concept });
-    else result = payReusable({ qrId: params.qrId!, payerId: user!.id });
+    if (params.kind === 'one_time') {
+      result = await payOneTime({ requestId: params.requestId! });
+    } else if (params.kind === 'personal') {
+      result = await payPersonal({ recipientId: recipientId!, amountInCents, concept });
+    } else {
+      result = await payReusable({ qrId: params.qrId! });
+    }
 
     if (!result.ok) return setError(result.error);
     router.replace({ pathname: '/pay/result', params: { transactionId: result.id } });

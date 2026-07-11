@@ -1,0 +1,46 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Regla de utilidad para verificar que el usuario esté autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Perfiles de usuario:
+    // Lectura permitida para cualquier usuario autenticado (para verificar la contraparte al escanear/pagar).
+    // Escritura completamente prohibida desde el cliente (el saldo y perfil se crean/modifican en el backend).
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    // Cobros puntuales:
+    // Lectura permitida para cualquier usuario autenticado (al escanear el QR).
+    // Escritura prohibida desde el cliente (gestionado por Cloud Functions).
+    match /oneTimeRequests/{requestId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    // QRs Reutilizables:
+    // Lectura permitida para cualquier usuario autenticado.
+    // Escritura prohibida desde el cliente (gestionado por Cloud Functions).
+    match /reusableQrs/{qrId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    // Transacciones:
+    // Lectura permitida SOLO a los participantes involucrados (pagador o receptor).
+    // Escritura completamente prohibida (creado únicamente por Cloud Functions).
+    match /transactions/{transactionId} {
+      allow read: if isAuthenticated() && (
+        request.auth.uid == resource.data.payerId || 
+        request.auth.uid == resource.data.recipientId
+      );
+      allow write: if false;
+    }
+  }
+}

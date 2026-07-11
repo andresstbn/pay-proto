@@ -45,7 +45,12 @@ export default function ReusableQrScreen() {
         <Button
           title="Desactivar QR"
           variant="accent"
-          onPress={() => deactivateReusable({ qrId: qr.id, ownerId: user.id })}
+          onPress={async () => {
+            const res = await deactivateReusable({ qrId: qr.id });
+            if (!res.ok) {
+              alert(res.error);
+            }
+          }}
         />
       )}
 

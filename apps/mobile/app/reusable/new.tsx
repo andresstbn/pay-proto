@@ -31,8 +31,9 @@ export default function NewReusable() {
 
   const amountInCents = parseEuros(amountText);
 
-  function submit() {
-    const result = createReusableQr({ ownerId: user!.id, name, amountInCents, description });
+  async function submit() {
+    setError(null);
+    const result = await createReusableQr({ name, amountInCents, description });
     if (!result.ok) return setError(result.error);
     router.replace({ pathname: '/reusable/[id]', params: { id: result.id } });
   }

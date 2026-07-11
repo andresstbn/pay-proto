@@ -1,0 +1,9 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy:rules": "npx firebase deploy --only firestore:rules",
+    "deploy:functions": "pnpm --filter backend-functions run build && npx firebase deploy --only functions"
+  }
+}

@@ -24,8 +24,9 @@ export default function NewCharge() {
 
   const amountInCents = parseEuros(amountText);
 
-  function submit() {
-    const result = createOneTimeRequest({ recipientId: user!.id, amountInCents, concept });
+  async function submit() {
+    setError(null);
+    const result = await createOneTimeRequest({ amountInCents, concept });
     if (!result.ok) return setError(result.error);
     router.replace({ pathname: '/charge/[id]', params: { id: result.id } });
   }
