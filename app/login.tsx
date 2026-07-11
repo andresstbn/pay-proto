@@ -19,7 +19,7 @@ export default function Login() {
     <View style={{ flex: 1, backgroundColor: colors.navy900, padding: spacing.xl, justifyContent: 'center', gap: spacing.xxxl }}>
       <View style={{ alignItems: 'center', gap: spacing.sm }}>
         <Txt variant="display" color={colors.white}>EricPay</Txt>
-        <Txt variant="body" color={colors.cyan400}>Pagos simulados por QR</Txt>
+        <Txt variant="body" color={colors.cyan400}>Pagos por QR</Txt>
       </View>
 
       <View style={{ gap: spacing.md }}>
@@ -56,10 +56,6 @@ export default function Login() {
           </Pressable>
         ))}
       </View>
-
-      <Txt variant="caption" color={colors.gray500} style={{ textAlign: 'center' }}>
-        Demo interna — saldo ficticio, sin conexión con bancos ni dinero real.
-      </Txt>
     </View>
   );
 }
