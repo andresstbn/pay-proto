@@ -1,0 +1,31 @@
+{
+  "cli": {
+    "version": ">= 10.0.0"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EAS_BUILD_NPM_CLIENT": "pnpm"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EAS_BUILD_NPM_CLIENT": "pnpm"
+      }
+    },
+    "production": {
+      "env": {
+        "EAS_BUILD_NPM_CLIENT": "pnpm"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
