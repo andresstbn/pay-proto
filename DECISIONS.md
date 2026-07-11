@@ -49,3 +49,17 @@ Dos tipos de entrada:
 
 **Fecha:** 2026-07-11
 **Qué quedó funcionando:** CLAUDE.md (reglas de trabajo), DECISIONS.md (este archivo) y DESIGN.md (sistema visual) creados en la raíz del repo. Repo listo para empezar a codear la Fase 0 (SPEC-001) sobre esta base.
+
+## D-006 — Estado en memoria con Context + useReducer, sin librería externa
+
+**Fecha:** 2026-07-11
+**Contexto:** D-003 fija "estado en memoria" pero no la implementación. Con un solo proyecto Expo y sin backend, una librería de estado (Zustand, Redux) es una dependencia nueva para resolver algo que React ya resuelve con Context.
+**Decisión:** Un único `StoreProvider` (`src/domain/store.tsx`) con `useState` + un `useRef` como snapshot síncrono. Las validaciones de negocio (RF-001 §18) viven como funciones puras `(State, args) => State` que lanzan `DomainError` con el mensaje que ve el usuario — es la "sola capa de validación" que pide SPEC-001 §6.
+**Consecuencias:** `setState` con función updater no garantiza ejecución síncrona del updater (optimización interna de React), así que las validaciones corren sobre `useRef`, no dentro del updater — evita depender de ese detalle de implementación. Motor de pagos deliberadamente simple: sin colas, sin reintentos, apto solo para una demo de una sesión.
+
+## I-002 — Fase 0 funcional: las tres modalidades de cobro de principio a fin
+
+**Fecha:** 2026-07-11
+**Qué quedó funcionando:** Proyecto Expo + TypeScript + Expo Router scaffoldeado en la raíz. Las 13 pantallas de SPEC-001 §5 implementadas (login simulado, home, cobro puntual, QR personal, QRs reutilizables, escaneo con cámara real vía `expo-camera` + atajo "simular escaneo", confirmación, resultado, historial). Motor de dominio (`src/domain/store.tsx`) con las reglas de RF-001 §18. Tokens de DESIGN.md aplicados (`src/theme/theme.ts`, `src/components/ui.tsx`).
+Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear → pagar → saldo actualizado → aparece en ambos historiales) y Escenario 3 (QR reutilizable: crear → pagar → sigue activo) completos de principio a fin; Escenario 2 (QR personal con monto libre) verificado hasta la pantalla de confirmación.
+**Pendiente para una siguiente sesión:** probar Escenario 2 hasta el resultado, expiración de cobros puntuales (15 min), y los casos de error de RF-001 §13 (saldo insuficiente, QR ya pagado, auto-pago) — la lógica está en `store.tsx` pero no se ejercitó cada rama manualmente.
