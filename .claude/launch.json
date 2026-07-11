@@ -3,9 +3,9 @@
   "configurations": [
     {
       "name": "ericpay-web",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["expo", "start", "--web"],
-      "port": 8081
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "mobile", "exec", "expo", "start", "--port", "8082"],
+      "port": 8082
     }
   ]
 }

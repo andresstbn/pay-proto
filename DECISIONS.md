@@ -106,3 +106,10 @@ Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear 
 **Consecuencias:** Un solo formulario cubre login y registro. Contra: un usuario que se equivoque de contraseña en un email nuevo crea una cuenta sin querer — aceptable en prototipo; si molesta, se separa el flujo en un incremento futuro.
 
 **Actualización (2026-07-11):** a petición del usuario se conservan ambas formas también en móvil: el botón "Continuar con Google" sigue visible en todas las plataformas. En Web usa Google real (popup); en móvil usa el email del formulario con la contraseña fija interna de D-009 (no hay popups en React Native y Google nativo requiere development build). Ambos caminos convergen en cuentas reales de Firebase Auth.
+
+## D-012 — Downgrade de Expo SDK 57 a SDK 54
+
+**Fecha:** 2026-07-11
+**Contexto:** El Expo Go disponible en el App Store solo soporta SDK 54 (la versión para SDK 57 lleva meses en la cola de revisión de Apple). Con el proyecto en SDK 57 era imposible probar en un iPhone físico sin membresía del Apple Developer Program (`eas go`) o development build.
+**Decisión:** Bajar el proyecto a SDK 54 (`expo install --fix` para alinear todas las dependencias; react-native 0.86→0.81, expo-router 7→6, etc.). Se fijó `react-native-reanimated` a 4.1.7 explícitamente porque pnpm resolvía el peer opcional de expo-router a la versión de SDK 57.
+**Consecuencias:** La app corre en el Expo Go del App Store en iPhone físico. Cuando Apple apruebe el Expo Go de SDK 57 (o se adopte development build), se puede volver a subir.
