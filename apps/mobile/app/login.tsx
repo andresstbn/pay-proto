@@ -27,9 +27,12 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
 
   async function handleGoogleLogin() {
+    if (Platform.OS !== 'web' && !email.trim()) {
+      return setError('Escribe tu email para continuar con Google.');
+    }
     setLoading(true);
     setError(null);
-    const res = await loginWithGoogle();
+    const res = await loginWithGoogle(email);
     setLoading(false);
     if (res.ok) {
       router.replace('/home');
@@ -87,38 +90,36 @@ export default function Login() {
               Si no tienes cuenta, se creará automáticamente.
             </Txt>
 
-            {Platform.OS === 'web' && (
-              <Pressable
-                onPress={handleGoogleLogin}
-                style={({ pressed }) => [
-                  {
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: spacing.md,
-                    backgroundColor: colors.white,
-                    borderRadius: radius.pill,
-                    paddingVertical: spacing.md,
-                    paddingHorizontal: spacing.lg,
-                  },
-                  pressed && { opacity: 0.85 },
-                ]}
+            <Pressable
+              onPress={handleGoogleLogin}
+              style={({ pressed }) => [
+                {
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: spacing.md,
+                  backgroundColor: colors.white,
+                  borderRadius: radius.pill,
+                  paddingVertical: spacing.md,
+                  paddingHorizontal: spacing.lg,
+                },
+                pressed && { opacity: 0.85 },
+              ]}
+            >
+              <View
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 16,
+                  backgroundColor: colors.blue600,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
               >
-                <View
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 16,
-                    backgroundColor: colors.blue600,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <Ionicons name="logo-google" size={16} color={colors.white} />
-                </View>
-                <Txt variant="subtitle" color={colors.gray900}>Continuar con Google</Txt>
-              </Pressable>
-            )}
+                <Ionicons name="logo-google" size={16} color={colors.white} />
+              </View>
+              <Txt variant="subtitle" color={colors.gray900}>Continuar con Google</Txt>
+            </Pressable>
 
             {error && (
               <Txt variant="caption" color={colors.red500} style={{ textAlign: 'center', marginTop: spacing.xs }}>

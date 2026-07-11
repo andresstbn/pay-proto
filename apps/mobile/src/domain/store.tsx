@@ -42,7 +42,7 @@ interface StoreState {
 }
 
 interface Store extends StoreState {
-  loginWithGoogle: () => Promise<Result>;
+  loginWithGoogle: (email?: string) => Promise<Result>;
   loginWithEmail: (email: string, password: string) => Promise<Result>;
   logout: () => Promise<void>;
   createOneTimeRequest: (args: { amountInCents: number; concept: string }) => Promise<CreateResult>;
@@ -228,15 +228,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     };
   }, [uid]);
 
-  // Autenticación con Google Real (Web)
-  async function loginWithGoogle(): Promise<Result> {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      return { ok: true };
-    } catch (e: any) {
-      return { ok: false, error: e.message || 'Error en el login con Google.' };
+  // Autenticación con Google. Real (popup) en Web; en móvil no hay popups en React Native,
+  // así que se autentica con el email indicado y una contraseña fija interna (D-009).
+  // ponytail: Google real en móvil requiere development build + OAuth nativo; se hará si un incremento lo pide.
+  async function loginWithGoogle(email?: string): Promise<Result> {
+    if (Platform.OS === 'web') {
+      try {
+        const provider = new GoogleAuthProvider();
+        await signInWithPopup(auth, provider);
+        return { ok: true };
+      } catch (e: any) {
+        return { ok: false, error: e.message || 'Error en el login con Google.' };
+      }
     }
+    return loginWithEmail(email ?? '', 'password123');
   }
 
   // Autenticación con email y contraseña. Si el email no existe, registra la cuenta.
