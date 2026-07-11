@@ -63,3 +63,10 @@ Dos tipos de entrada:
 **Qué quedó funcionando:** Proyecto Expo + TypeScript + Expo Router scaffoldeado en la raíz. Las 13 pantallas de SPEC-001 §5 implementadas (login simulado, home, cobro puntual, QR personal, QRs reutilizables, escaneo con cámara real vía `expo-camera` + atajo "simular escaneo", confirmación, resultado, historial). Motor de dominio (`src/domain/store.tsx`) con las reglas de RF-001 §18. Tokens de DESIGN.md aplicados (`src/theme/theme.ts`, `src/components/ui.tsx`).
 Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear → pagar → saldo actualizado → aparece en ambos historiales) y Escenario 3 (QR reutilizable: crear → pagar → sigue activo) completos de principio a fin; Escenario 2 (QR personal con monto libre) verificado hasta la pantalla de confirmación.
 **Pendiente para una siguiente sesión:** probar Escenario 2 hasta el resultado, expiración de cobros puntuales (15 min), y los casos de error de RF-001 §13 (saldo insuficiente, QR ya pagado, auto-pago) — la lógica está en `store.tsx` pero no se ejercitó cada rama manualmente.
+
+## D-007 — La UI no expone avisos de "prototipo" o "demo"
+
+**Fecha:** 2026-07-11
+**Contexto:** La app se muestra a usuarios controlados (no es solo una demo interna de un dispositivo); el usuario pidió explícitamente tratar la UI como producto terminado en vez de recordar en pantalla que los datos son simulados.
+**Decisión:** Se quitan textos tipo "Demo interna — saldo ficticio..." de las pantallas (ver `app/login.tsx`). Que los saldos y usuarios sean simulados se documenta en `docs/` y aquí, no en la interfaz.
+**Consecuencias:** Nuevas pantallas no deben agregar avisos de este tipo — es una regla permanente, ahora en CLAUDE.md ("Copy de la interfaz"), no una excepción puntual de esta pantalla.
