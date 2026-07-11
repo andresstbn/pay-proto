@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "npx firebase-tools emulators:start",
     "deploy:rules": "npx firebase-tools deploy --only firestore:rules",
     "deploy:functions": "pnpm --filter backend-functions run build && npx firebase-tools deploy --only functions"
   }
