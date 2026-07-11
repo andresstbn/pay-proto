@@ -6,12 +6,23 @@ import { Ionicons } from '@expo/vector-icons';
 import { useStore } from '../src/domain/store';
 import { colors, radius, spacing } from '../src/theme/theme';
 
+const inputStyle = {
+  backgroundColor: colors.white,
+  color: colors.gray900,
+  borderRadius: radius.card,
+  padding: spacing.md,
+  fontSize: 15,
+  borderWidth: 1,
+  borderColor: colors.gray200,
+} as const;
+
 // Pantalla 2: Login con Firebase Auth.
-// Utiliza Google Sign-in real en Web y un fallback de simulación por email en móvil.
+// Google Sign-in en Web; email y contraseña en móvil (registra la cuenta si no existe).
 export default function Login() {
-  const { loginWithGoogle, loginWithEmailSimulated } = useStore();
+  const { loginWithGoogle, loginWithEmail } = useStore();
   const router = useRouter();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,14 +38,10 @@ export default function Login() {
     }
   }
 
-  async function handleEmailSimulatedLogin() {
-    const trimmed = email.trim();
-    if (!trimmed) {
-      return setError('Por favor, ingresa un correo electrónico.');
-    }
+  async function handleEmailLogin() {
     setLoading(true);
     setError(null);
-    const res = await loginWithEmailSimulated(trimmed);
+    const res = await loginWithEmail(email, password);
     setLoading(false);
     if (res.ok) {
       router.replace('/home');
@@ -55,7 +62,32 @@ export default function Login() {
           <ActivityIndicator color={colors.cyan400} size="large" />
         ) : (
           <>
-            {Platform.OS === 'web' ? (
+            <TextInput
+              value={email}
+              onChangeText={(t) => { setEmail(t); setError(null); }}
+              placeholder="Correo electrónico"
+              placeholderTextColor={colors.gray500}
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoComplete="email"
+              style={inputStyle}
+            />
+            <TextInput
+              value={password}
+              onChangeText={(t) => { setPassword(t); setError(null); }}
+              placeholder="Contraseña"
+              placeholderTextColor={colors.gray500}
+              secureTextEntry
+              autoCapitalize="none"
+              autoComplete="password"
+              style={inputStyle}
+            />
+            <Button title="Entrar" onPress={handleEmailLogin} />
+            <Txt variant="caption" color={colors.gray500} style={{ textAlign: 'center' }}>
+              Si no tienes cuenta, se creará automáticamente.
+            </Txt>
+
+            {Platform.OS === 'web' && (
               <Pressable
                 onPress={handleGoogleLogin}
                 style={({ pressed }) => [
@@ -86,30 +118,6 @@ export default function Login() {
                 </View>
                 <Txt variant="subtitle" color={colors.gray900}>Continuar con Google</Txt>
               </Pressable>
-            ) : (
-              <View style={{ gap: spacing.md }}>
-                <Txt variant="caption" color={colors.cyan400} style={{ textAlign: 'center', marginBottom: spacing.xs }}>
-                  Simulación de Google Login (Móvil)
-                </Txt>
-                <TextInput
-                  value={email}
-                  onChangeText={(t) => { setEmail(t); setError(null); }}
-                  placeholder="Introduce tu email de Google"
-                  placeholderTextColor={colors.gray500}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                  style={{
-                    backgroundColor: colors.white,
-                    color: colors.gray900,
-                    borderRadius: radius.card,
-                    padding: spacing.md,
-                    fontSize: 15,
-                    borderWidth: 1,
-                    borderColor: colors.gray200,
-                  }}
-                />
-                <Button title="Iniciar sesión con Google (Simulado)" onPress={handleEmailSimulatedLogin} />
-              </View>
             )}
 
             {error && (

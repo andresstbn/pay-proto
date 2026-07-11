@@ -43,7 +43,7 @@ interface StoreState {
 
 interface Store extends StoreState {
   loginWithGoogle: () => Promise<Result>;
-  loginWithEmailSimulated: (email: string) => Promise<Result>;
+  loginWithEmail: (email: string, password: string) => Promise<Result>;
   logout: () => Promise<void>;
   createOneTimeRequest: (args: { amountInCents: number; concept: string }) => Promise<CreateResult>;
   payOneTime: (args: { requestId: string }) => Promise<CreateResult>;
@@ -239,29 +239,32 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  // Autenticación simulada por email (Nativo / Expo Go)
-  async function loginWithEmailSimulated(email: string): Promise<Result> {
+  // Autenticación con email y contraseña. Si el email no existe, registra la cuenta.
+  async function loginWithEmail(email: string, password: string): Promise<Result> {
     const cleanEmail = email.trim().toLowerCase();
     if (!cleanEmail || !cleanEmail.includes('@')) {
       return { ok: false, error: 'Por favor, ingresa un correo electrónico válido.' };
     }
-
-    const dummyPassword = 'password123'; // Contraseña fija interna para simulación
+    if (password.length < 6) {
+      return { ok: false, error: 'La contraseña debe tener al menos 6 caracteres.' };
+    }
 
     try {
-      // Intentar iniciar sesión
-      await signInWithEmailAndPassword(auth, cleanEmail, dummyPassword);
+      await signInWithEmailAndPassword(auth, cleanEmail, password);
       return { ok: true };
     } catch (error: any) {
-      // Si el usuario no existe, lo creamos
+      // auth/invalid-credential cubre tanto "usuario no existe" como "contraseña incorrecta";
+      // intentamos registrar y, si el email ya existe, era contraseña incorrecta.
       if (error.code === 'auth/user-not-found' || error.code === 'auth/invalid-credential') {
         try {
-          const credentials = await createUserWithEmailAndPassword(auth, cleanEmail, dummyPassword);
+          const credentials = await createUserWithEmailAndPassword(auth, cleanEmail, password);
           const displayName = cleanEmail.split('@')[0];
-          // Asignar el displayName en Auth
           await updateProfile(credentials.user, { displayName });
           return { ok: true };
         } catch (createError: any) {
+          if (createError.code === 'auth/email-already-in-use') {
+            return { ok: false, error: 'Contraseña incorrecta.' };
+          }
           return { ok: false, error: createError.message || 'Error al registrar el usuario.' };
         }
       }
@@ -343,7 +346,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const store: Store = {
     ...state,
     loginWithGoogle,
-    loginWithEmailSimulated,
+    loginWithEmail,
     logout,
     createOneTimeRequest,
     payOneTime,

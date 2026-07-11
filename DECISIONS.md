@@ -97,3 +97,10 @@ Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear 
 **Fecha:** 2026-07-11
 **Qué quedó funcionando:** Proyecto reestructurado a monorepo con `pnpm workspaces` (app en `apps/mobile` y backend en `apps/backend`). Integración completa del SDK de Firebase y persistencia de sesión real. Implementación de reglas de Firestore y Cloud Functions v2 con base de datos transaccional atómica. Interfaces de confirmación, creación de cobros y QRs modificadas para adaptarse a llamadas asíncronas de base de datos.
 
+
+## D-011 — Login con Email y Contraseña con Auto-registro (reemplaza D-009)
+
+**Fecha:** 2026-07-11
+**Contexto:** La simulación de Google por email en móvil (D-009) usaba una contraseña fija interna y la pantalla de login llamaba a un método que ya no existía en el store. Se necesitaba autenticación real que funcione en simuladores de iOS, donde Google Sign-In es problemático.
+**Decisión:** Login con email y contraseña reales (`signInWithEmailAndPassword`). Si las credenciales no corresponden a una cuenta existente, se registra automáticamente (`createUserWithEmailAndPassword`) en el mismo flujo — no hay pantalla de registro separada. El proveedor Email/Password ya estaba habilitado en el proyecto de Firebase. Google Sign-In se mantiene solo en Web.
+**Consecuencias:** Un solo formulario cubre login y registro. Contra: un usuario que se equivoque de contraseña en un email nuevo crea una cuenta sin querer — aceptable en prototipo; si molesta, se separa el flujo en un incremento futuro.
