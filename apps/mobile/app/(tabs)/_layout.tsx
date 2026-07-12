@@ -1,15 +1,18 @@
 import { Tabs } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
-import { Easing } from 'react-native';
+import { Easing, Platform } from 'react-native';
 import { useReducedMotion } from 'react-native-reanimated';
 import { colors, fonts } from '../../src/theme/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function TabsLayout() {
   const reduceMotion = useReducedMotion();
+  const insets = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
+        // Oculta el header por defecto en todas las pestañas. Cada pantalla lo gestiona si lo necesita.
         headerShown: false,
         animation: reduceMotion ? 'none' : 'shift',
         transitionSpec: {
@@ -20,14 +23,14 @@ export default function TabsLayout() {
         tabBarActiveTintColor: colors.blue600,
         tabBarInactiveTintColor: colors.gray500,
         tabBarLabelStyle: { fontSize: 12, fontFamily: fonts.semibold },
+        // Estilo de la barra de pestañas
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopWidth: 1,
           borderTopColor: colors.gray200,
-          borderTopLeftRadius: 12,
-          borderTopRightRadius: 12,
-          height: 64,
-          paddingTop: 6,
+          // Ajuste para la barra de navegación de Android
+          height: 64 + insets.bottom,
+          paddingBottom: insets.bottom,
         },
       }}
     >
