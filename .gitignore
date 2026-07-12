@@ -36,6 +36,7 @@ ui-debug.log*
 # local env files
 .env*.local
 .env
+apps/mobile/google-services.json
 **/functions/lib/
 **/functions/node_modules/
 **/coverage/

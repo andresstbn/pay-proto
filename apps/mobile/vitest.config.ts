@@ -8,6 +8,7 @@ export default defineConfig({
       include: [
         'src/auth/auth-service.ts',
         'src/auth/errors.ts',
+        'src/auth/google-sign-in.android.ts',
         'src/groups/document-mappers.ts',
         'src/groups/history-policy.ts',
         'src/groups/qr.ts',

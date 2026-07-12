@@ -30,6 +30,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-native": "0.81.5",
+    "react-native-nitro-google-signin": "^1.0.1",
+    "react-native-nitro-modules": "^0.36.1",
     "react-native-qrcode-svg": "^6.3.21",
     "react-native-reanimated": "~4.1.1",
     "react-native-safe-area-context": "~5.6.2",
@@ -53,6 +55,15 @@
     "eas-build-pre-install": "corepack enable",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage"
+  },
+  "expo": {
+    "doctor": {
+      "reactNativeDirectoryCheck": {
+        "exclude": [
+          "react-native-nitro-google-signin"
+        ]
+      }
+    }
   },
   "packageManager": "pnpm@9.4.0",
   "private": true

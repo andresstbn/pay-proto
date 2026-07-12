@@ -74,7 +74,7 @@ pnpm install
    cp apps/mobile/.env.example apps/mobile/.env
    ```
 2. Rellena los valores `EXPO_PUBLIC_FIREBASE_*` con la configuración de la Web App de Firebase.
-3. Para OAuth móvil, completa también los client IDs públicos de Google y Facebook de `.env.example`. Nunca añadas App Secrets, tokens ni claves privadas al cliente.
+3. Para OAuth móvil, completa también los client IDs públicos de Google y Facebook de `.env.example`. En Android, Credential Manager usa `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`; el cliente Android se vincula mediante package + SHA-1 en Firebase. Nunca añadas App Secrets, tokens ni claves privadas al cliente.
 4. Ejecuta la aplicación:
    * **Para probar en Web (Login con Google Real)**:
      ```bash
@@ -87,8 +87,8 @@ pnpm install
      *(Abre la app **Expo Go** en tu iPhone/Android y escanea el código QR de la terminal. Asegúrate de estar en la misma red Wi-Fi).*
 
 > Email/contraseña sigue funcionando en Expo Go. Google/Facebook/Apple en móvil
-> requieren un **development build**, porque OAuth necesita el esquema propio
-> `ericpay://`. Configura los tres identificadores públicos adicionales de
+> requieren un **development build**. Google Android usa Credential Manager;
+> los demás proveedores nativos conservan sus callbacks de plataforma. Configura los identificadores públicos adicionales de
 > `apps/mobile/.env.example`, habilita los proveedores en Firebase y ejecuta el
 > perfil `development` de EAS. Apple se muestra en iOS y Web; Google/Facebook en
 > iOS, Android y Web. Ningún App Secret o clave privada debe guardarse en `.env`.
@@ -131,8 +131,10 @@ desde `apps/mobile`, que es la raíz de la aplicación Expo.
    **Developer** o superior. No enlaces un proyecto nuevo hasta decidir qué
    ocurre con los builds y el keystore anteriores.
 3. Para Google Login en Android, registra una app Firebase con package
-   `com.andresstbn.ericpay`, añade el SHA-1 del keystore de EAS y configura
-   `EXPO_PUBLIC_GOOGLE_ANDROID_CLIENT_ID`.
+   `com.andresstbn.ericpay`, añade el SHA-1 del keystore de EAS, descarga
+   `google-services.json` y configura `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`. El
+   cliente OAuth Android debe existir en el mismo proyecto, aunque no se pase
+   directamente al código JavaScript.
 4. Genera el development build que permite probar OAuth:
    ```bash
    pnpm dlx eas-cli build --platform android --profile development
