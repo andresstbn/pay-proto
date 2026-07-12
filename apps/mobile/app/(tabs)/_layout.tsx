@@ -1,12 +1,22 @@
 import { Tabs } from 'expo-router';
 import { MaterialIcons } from '@expo/vector-icons';
+import { Easing } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
 import { colors, fonts } from '../../src/theme/theme';
 
 export default function TabsLayout() {
+  const reduceMotion = useReducedMotion();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+        animation: reduceMotion ? 'none' : 'shift',
+        transitionSpec: {
+          animation: 'timing',
+          config: { duration: reduceMotion ? 0 : 220, easing: Easing.out(Easing.cubic) },
+        },
+        sceneStyle: { backgroundColor: colors.gray50 },
         tabBarActiveTintColor: colors.blue600,
         tabBarInactiveTintColor: colors.gray500,
         tabBarLabelStyle: { fontSize: 12, fontFamily: fonts.semibold },

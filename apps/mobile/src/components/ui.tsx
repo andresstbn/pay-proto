@@ -1,4 +1,5 @@
 import { ReactNode } from 'react';
+import { useRouter } from 'expo-router';
 import {
   Pressable,
   PressableProps,
@@ -124,13 +125,12 @@ export function Txt({
 export function BrandHeader({
   user,
   greeting,
-  onLogout,
 }: {
   user: User;
   greeting?: string;
-  onLogout?: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   return (
     <LinearGradient
       colors={[colors.navy900, colors.navy700]}
@@ -155,15 +155,20 @@ export function BrandHeader({
         </View>
       </View>
       <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-        {/* ponytail: campana decorativa — sin feature de notificaciones en esta fase */}
-        <View style={styles.headerIconBtn}>
+        <Pressable
+          accessibilityLabel="Configurar notificaciones"
+          onPress={() => router.push('/notifications')}
+          style={({ pressed }) => [styles.headerIconBtn, pressed && { opacity: 0.7 }]}
+        >
           <MaterialIcons name="notifications-none" size={22} color={colors.white} />
-        </View>
-        {onLogout && (
-          <Pressable onPress={onLogout} style={({ pressed }) => [styles.headerIconBtn, pressed && { opacity: 0.7 }]}>
-            <MaterialIcons name="logout" size={20} color={colors.white} />
-          </Pressable>
-        )}
+        </Pressable>
+        <Pressable
+          accessibilityLabel="Abrir perfil"
+          onPress={() => router.push('/profile')}
+          style={({ pressed }) => [styles.headerIconBtn, pressed && { opacity: 0.7 }]}
+        >
+          <MaterialIcons name="person-outline" size={22} color={colors.white} />
+        </Pressable>
       </View>
     </LinearGradient>
   );
