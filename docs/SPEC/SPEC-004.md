@@ -1,5 +1,10 @@
 # SPEC-004 — Acceso social y grupos con reparto automático
 
+> **Estado:** parcialmente operativo. Los grupos, el reparto y la exportación
+> de QRs están implementados; OAuth móvil requiere todavía aprovisionamiento y
+> verificación E2E. Registro relacionado: `I-005`, `I-006`, `I-007`, `D-016`,
+> `D-017` y `D-019` en [`DECISIONS.md`](../../DECISIONS.md).
+
 ## 1. Objetivo
 
 Ampliar EricPay con acceso rápido mediante Google, Apple y Facebook, y con grupos privados cuyos ingresos por QR se reparten de forma atómica entre los miembros activos. El saldo continúa siendo ficticio, en EUR y expresado como céntimos enteros.
@@ -92,3 +97,27 @@ Al confirmar un pago, el servidor:
 - Grupos de más de 20 miembros.
 - Apple Sign-In en Android.
 - Universal links con fallback a tiendas.
+
+## 9. Estado de implementación y verificación
+
+| Área | Estado | Evidencia | Pendiente |
+| --- | --- | --- | --- |
+| Email y contraseña | Operativo | Flujo real de Firebase Auth y pruebas del servicio de autenticación. | Ninguno para desarrollo con Expo Go. |
+| Google en Web | Configurado | Proveedor Google habilitado y cliente Web presente en Firebase Auth. | Prueba manual periódica cuando cambien dominios autorizados. |
+| Google, Facebook y Apple en móvil | Implementado en código | Adaptadores nativos, vinculación de identidades y manejo de errores cubiertos por tests. | Apps y clientes OAuth nativos, identificadores públicos, acceso EAS, development builds y prueba E2E real. |
+| Grupos y reparto | Operativo | 21/21 tests de Functions, 5/5 tests de reglas, 22 Functions activas y 5 índices `READY` en producción. | Smoke test autenticado desde dos cuentas después de cambios de infraestructura. |
+| Compartir y guardar QR | Implementado y probado automáticamente | Captura PNG, share nativo, guardado del QR personal y fallback Web; suite móvil 61/61. | Registrar prueba manual completa; los QRs fijos de grupo aún no tienen una acción propia de compartir. |
+
+### 9.1 Comandos de verificación
+
+```bash
+pnpm --filter mobile exec tsc --noEmit
+pnpm --filter mobile test:coverage
+pnpm --filter backend-functions test:coverage
+pnpm --filter backend test:rules
+```
+
+El criterio de aceptación 1 permanece abierto en móvil. OAuth no se considera
+cerrado hasta que el flujo proveedor → callback de
+la app → credencial Firebase → sesión persistida termine correctamente en un
+development build Android y, cuando exista firma disponible, en iOS.
