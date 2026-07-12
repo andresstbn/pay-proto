@@ -5,24 +5,17 @@ import { NOTIFICATION_STORAGE_KEYS } from './constants';
 export interface NotificationPreferences {
   soundEnabled: boolean;
   hapticsEnabled: boolean;
-  pushEnabled: boolean;
 }
 
 const DEFAULT_PREFERENCES: NotificationPreferences = {
   soundEnabled: true,
   hapticsEnabled: true,
-  pushEnabled: true,
 };
 
 interface NotificationPreferencesValue {
   preferences: NotificationPreferences;
-  loaded: boolean;
   updatePreference: <K extends keyof NotificationPreferences>(key: K, value: NotificationPreferences[K]) => void;
-  pushStatus: PushRegistrationStatus;
-  reportPushStatus: (status: PushRegistrationStatus) => void;
 }
-
-export type PushRegistrationStatus = 'idle' | 'registering' | 'ready' | 'denied' | 'unsupported' | 'error';
 
 const NotificationPreferencesContext = createContext<NotificationPreferencesValue | null>(null);
 
@@ -32,8 +25,6 @@ function isStoredPreferences(value: unknown): value is Partial<NotificationPrefe
 
 export function NotificationPreferencesProvider({ children }: { children: ReactNode }) {
   const [preferences, setPreferences] = useState(DEFAULT_PREFERENCES);
-  const [loaded, setLoaded] = useState(false);
-  const [pushStatus, setPushStatus] = useState<PushRegistrationStatus>('idle');
 
   useEffect(() => {
     let active = true;
@@ -48,9 +39,6 @@ export function NotificationPreferencesProvider({ children }: { children: ReactN
       .catch(() => {
         // Conservamos valores seguros por defecto si el almacenamiento local falla.
       })
-      .finally(() => {
-        if (active) setLoaded(true);
-      });
     return () => {
       active = false;
     };
@@ -67,8 +55,8 @@ export function NotificationPreferencesProvider({ children }: { children: ReactN
   }
 
   const value = useMemo(
-    () => ({ preferences, loaded, updatePreference, pushStatus, reportPushStatus: setPushStatus }),
-    [preferences, loaded, pushStatus],
+    () => ({ preferences, updatePreference }),
+    [preferences],
   );
 
   return <NotificationPreferencesContext.Provider value={value}>{children}</NotificationPreferencesContext.Provider>;

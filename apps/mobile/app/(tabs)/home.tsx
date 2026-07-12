@@ -1,10 +1,11 @@
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
 import { BrandHeader, Card, formatEuros, Screen, Txt } from '../../src/components/ui';
 import { useProtectedUser, useStore } from '../../src/domain/store';
+import { GuidedTour } from '../../src/onboarding/GuidedTour';
 import { colors, fonts, radius, shadow, spacing } from '../../src/theme/theme';
 
 const ACTIONS = [
@@ -23,8 +24,9 @@ function greetingByHour(): string {
 
 export default function Home() {
   const user = useProtectedUser();
-  const { transactions, logout, users } = useStore();
+  const { transactions, users } = useStore();
   const router = useRouter();
+  const { tour } = useLocalSearchParams<{ tour?: string }>();
   const [balanceHidden, setBalanceHidden] = useState(false);
 
   if (!user) {
@@ -50,10 +52,6 @@ export default function Home() {
       <BrandHeader
         user={user}
         greeting={`${greetingByHour()}, ${user.displayName.split(' ')[0]}`}
-        onLogout={async () => {
-          await logout();
-          router.replace('/login');
-        }}
       />
 
       <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.xl }}>
@@ -234,6 +232,12 @@ export default function Home() {
           })}
         </View>
       </ScrollView>
+      <GuidedTour
+        forceVisible={tour === '1'}
+        onClose={() => {
+          if (tour === '1') router.setParams({ tour: '' });
+        }}
+      />
     </View>
   );
 }

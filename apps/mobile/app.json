@@ -26,17 +26,6 @@
           "resizeMode": "contain"
         }
       ],
-      [
-        "expo-notifications",
-        {
-          "icon": "./assets/notification-icon.png",
-          "color": "#3057FF",
-          "defaultChannel": "incoming-transfers-v1",
-          "sounds": [
-            "./assets/sounds/ericpay-received.wav"
-          ]
-        }
-      ],
       "expo-asset"
     ],
     "ios": {

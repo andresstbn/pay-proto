@@ -1,7 +1,6 @@
 import { useAudioPlayer } from 'expo-audio';
 import * as Haptics from 'expo-haptics';
 import { useRouter } from 'expo-router';
-import * as Notifications from 'expo-notifications';
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { formatEuros, Txt } from '../components/ui';
@@ -10,7 +9,6 @@ import { Transaction } from '../domain/types';
 import { colors, radius, shadow, spacing } from '../theme/theme';
 import { incomingCompletedTransactions } from './incoming-transfer-policy';
 import { useNotificationPreferences } from './notification-preferences';
-import { disablePushNotifications, registerForPushNotifications } from './push-registration';
 
 interface TransferNotice {
   transaction: Transaction;
@@ -19,23 +17,13 @@ interface TransferNotice {
 
 export function NotificationExperience({ children }: { children: ReactNode }) {
   const { currentUserId, transactions, users, receivedTransactionsReady } = useStore();
-  const { preferences, loaded, reportPushStatus } = useNotificationPreferences();
+  const { preferences } = useNotificationPreferences();
   const player = useAudioPlayer(require('../../assets/sounds/ericpay-received.wav'));
-  const router = useRouter();
-  const lastNotificationResponse = Notifications.useLastNotificationResponse();
-  const handledResponseId = useRef<string | null>(null);
   const knownIds = useRef(new Set<string>());
   const initialized = useRef(false);
   const sessionUserId = useRef<string | null>(null);
   const queue = useRef<TransferNotice[]>([]);
   const [notice, setNotice] = useState<TransferNotice | null>(null);
-
-  useEffect(() => {
-    const notification = lastNotificationResponse?.notification;
-    if (!currentUserId || !notification || handledResponseId.current === notification.request.identifier) return;
-    handledResponseId.current = notification.request.identifier;
-    if (notification.request.content.data.type === 'incoming_transfer') router.push('/history');
-  }, [currentUserId, lastNotificationResponse, router]);
 
   const showNext = useCallback(() => {
     setNotice((current) => current ?? queue.current.shift() ?? null);
@@ -79,28 +67,6 @@ export function NotificationExperience({ children }: { children: ReactNode }) {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success).catch(() => undefined);
     }
   }, [notice, player, preferences.hapticsEnabled, preferences.soundEnabled]);
-
-  useEffect(() => {
-    if (!loaded || !currentUserId) {
-      reportPushStatus('idle');
-      return;
-    }
-    let active = true;
-    reportPushStatus('registering');
-    const operation = preferences.pushEnabled
-      ? registerForPushNotifications(preferences.soundEnabled)
-      : disablePushNotifications().then(() => 'idle' as const);
-    operation
-      .then((status) => {
-        if (active) reportPushStatus(status);
-      })
-      .catch(() => {
-        if (active) reportPushStatus('error');
-      });
-    return () => {
-      active = false;
-    };
-  }, [currentUserId, loaded, preferences.pushEnabled, preferences.soundEnabled, reportPushStatus]);
 
   return (
     <View style={styles.root}>

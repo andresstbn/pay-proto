@@ -2,15 +2,9 @@ import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import * as functions from 'firebase-functions/v1';
-import { createNotificationHandlers } from './notifications/handlers';
 
 initializeApp();
 const db = getFirestore();
-const notificationHandlers = createNotificationHandlers(db);
-
-export const registerPushToken = notificationHandlers.registerPushToken;
-export const setPushEnabled = notificationHandlers.setPushEnabled;
-export const onTransactionCreated = notificationHandlers.onTransactionCreated;
 
 // Helper to generate custom IDs (like those in domain/store.tsx)
 function generateId(prefix: string): string {

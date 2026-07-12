@@ -7,16 +7,7 @@ import { colors, radius, spacing } from '../src/theme/theme';
 
 export default function NotificationSettingsScreen() {
   const router = useRouter();
-  const { preferences, updatePreference, pushStatus } = useNotificationPreferences();
-
-  const pushStatusLabel = {
-    idle: 'Desactivadas',
-    registering: 'Configurando…',
-    ready: 'Activas en este dispositivo',
-    denied: 'Permiso denegado en iOS/Android',
-    unsupported: 'Requiere un dispositivo y una development build',
-    error: 'No se pudo completar la configuración',
-  }[pushStatus];
+  const { preferences, updatePreference } = useNotificationPreferences();
 
   return (
     <Screen style={styles.screen}>
@@ -43,19 +34,27 @@ export default function NotificationSettingsScreen() {
           description="Confirma la transferencia con respuesta háptica."
           value={preferences.hapticsEnabled}
           onValueChange={(value) => updatePreference('hapticsEnabled', value)}
-        />
-        <PreferenceRow
-          icon="notifications-active"
-          title="Notificaciones push"
-          description={pushStatusLabel}
-          value={preferences.pushEnabled}
-          onValueChange={(value) => updatePreference('pushEnabled', value)}
           last
         />
       </View>
       <Txt variant="caption" color={colors.gray500} style={styles.note}>
-        El banner dentro de EricPay seguirá mostrándose aunque desactives el sonido o la vibración.
+        Estos avisos funcionan mientras EricPay está abierta, incluso desde Expo Go.
       </Txt>
+      <Txt variant="caption" color={colors.gray500} style={styles.sectionLabel}>EXPERIENCIA</Txt>
+      <Pressable
+        accessibilityLabel="Volver a ver el recorrido de bienvenida"
+        onPress={() => router.replace({ pathname: '/home', params: { tour: '1' } })}
+        style={({ pressed }) => [styles.tourCard, pressed && styles.tourCardPressed]}
+      >
+        <View style={styles.tourIcon}>
+          <MaterialIcons name="auto-awesome" size={22} color={colors.cyan400} />
+        </View>
+        <View style={styles.copy}>
+          <Txt variant="subtitle" color={colors.white}>Recorrido de bienvenida</Txt>
+          <Txt variant="caption" color={colors.gray200}>Descubre nuevamente lo esencial de EricPay.</Txt>
+        </View>
+        <MaterialIcons name="arrow-forward" size={21} color={colors.cyan400} />
+      </Pressable>
     </Screen>
   );
 }
@@ -98,4 +97,24 @@ const styles = StyleSheet.create({
   icon: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.gray100 },
   copy: { flex: 1, gap: spacing.xs },
   note: { marginHorizontal: spacing.xl, lineHeight: 18 },
+  sectionLabel: { marginTop: spacing.xxl, marginHorizontal: spacing.xl, fontSize: 11, letterSpacing: 1.6 },
+  tourCard: {
+    margin: spacing.lg,
+    marginTop: spacing.sm,
+    padding: spacing.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    borderRadius: radius.card,
+    backgroundColor: colors.navy900,
+  },
+  tourCardPressed: { opacity: 0.88, transform: [{ scale: 0.99 }] },
+  tourIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(90,216,240,0.12)',
+  },
 });
