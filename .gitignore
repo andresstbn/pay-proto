@@ -35,6 +35,7 @@ yarn-error.*
 .env
 **/functions/lib/
 **/functions/node_modules/
+**/coverage/
 
 # typescript
 *.tsbuildinfo

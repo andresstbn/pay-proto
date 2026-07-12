@@ -38,6 +38,7 @@ interface StoreState {
   transactions: Transaction[];
   currentUserId: string | null;
   loading: boolean;
+  receivedTransactionsReady: boolean;
 }
 
 interface Store extends StoreState {
@@ -68,6 +69,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     transactions: [],
     currentUserId: null,
     loading: true,
+    receivedTransactionsReady: false,
   });
 
   const router = useRouter();
@@ -85,6 +87,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
           transactions: [],
           oneTimeRequests: {},
           reusableQrs: {},
+          receivedTransactionsReady: false,
         }));
       }
     });
@@ -96,6 +99,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   // 2. Escuchar la colección de usuarios en tiempo real (si está autenticado)
   useEffect(() => {
     if (!uid) return;
+
+    setState((s) => ({ ...s, receivedTransactionsReady: false }));
     const unsubscribe = onSnapshot(collection(db, 'users'), (snapshot) => {
       const usersMap: Record<string, User> = {};
       snapshot.forEach((d) => {
@@ -198,6 +203,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     const unsubRcvd = onSnapshot(query(collection(db, 'transactions'), where('recipientId', '==', uid)), (snap) => {
       rcvdTxns = snap.docs.map(txnFromDoc);
       updateTransactions();
+      setState((s) => ({ ...s, receivedTransactionsReady: true }));
     });
 
     return () => {

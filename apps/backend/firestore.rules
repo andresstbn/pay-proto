@@ -14,6 +14,10 @@ service cloud.firestore {
     match /users/{userId} {
       allow read: if isAuthenticated();
       allow write: if false;
+
+      match /pushTokens/{tokenId} {
+        allow read, write: if false;
+      }
     }
 
     // Cobros puntuales:
@@ -41,6 +45,10 @@ service cloud.firestore {
         request.auth.uid == resource.data.recipientId
       );
       allow write: if false;
+    }
+
+    match /pushDeliveries/{deliveryId} {
+      allow read, write: if false;
     }
   }
 }

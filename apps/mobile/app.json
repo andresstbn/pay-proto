@@ -9,10 +9,39 @@
     "userInterfaceStyle": "light",
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false,
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#0B1436",
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 180,
+          "resizeMode": "contain"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/notification-icon.png",
+          "color": "#3057FF",
+          "defaultChannel": "incoming-transfers-v1",
+          "sounds": [
+            "./assets/sounds/ericpay-received.wav"
+          ]
+        }
+      ],
+      "expo-asset"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.andresstbn.ericpay"
     },
     "android": {
       "adaptiveIcon": {
