@@ -6,21 +6,28 @@ import { Animated, Pressable, StyleSheet, View } from 'react-native';
 import { formatEuros, Txt } from '../components/ui';
 import { useStore } from '../domain/store';
 import { Transaction } from '../domain/types';
+import { useGroups } from '../groups/GroupProvider';
+import { GroupHistoryItem } from '../groups/types';
 import { colors, radius, shadow, spacing } from '../theme/theme';
 import { incomingCompletedTransactions } from './incoming-transfer-policy';
 import { useNotificationPreferences } from './notification-preferences';
 
 interface TransferNotice {
-  transaction: Transaction;
+  id: string;
+  amountInCents: number;
   payerName: string;
+  groupName?: string;
 }
 
 export function NotificationExperience({ children }: { children: ReactNode }) {
   const { currentUserId, transactions, users, receivedTransactionsReady } = useStore();
+  const { history: groupHistory, groups, historyReady: groupHistoryReady } = useGroups();
   const { preferences } = useNotificationPreferences();
   const player = useAudioPlayer(require('../../assets/sounds/ericpay-received.wav'));
   const knownIds = useRef(new Set<string>());
   const initialized = useRef(false);
+  const knownGroupIds = useRef(new Set<string>());
+  const groupsInitialized = useRef(false);
   const sessionUserId = useRef<string | null>(null);
   const queue = useRef<TransferNotice[]>([]);
   const [notice, setNotice] = useState<TransferNotice | null>(null);
@@ -31,17 +38,30 @@ export function NotificationExperience({ children }: { children: ReactNode }) {
 
   const enqueue = useCallback((transaction: Transaction) => {
     queue.current.push({
-      transaction,
+      id: transaction.id,
+      amountInCents: transaction.amountInCents,
       payerName: users[transaction.payerId]?.displayName ?? 'Alguien',
     });
     showNext();
   }, [showNext, users]);
 
+  const enqueueGroup = useCallback((transaction: GroupHistoryItem) => {
+    queue.current.push({
+      id: transaction.id,
+      amountInCents: transaction.visibleAmountInCents,
+      payerName: users[transaction.payerId]?.displayName ?? 'Alguien',
+      groupName: transaction.groupName || groups.find((group) => group.id === transaction.groupId)?.name || 'tu grupo',
+    });
+    showNext();
+  }, [groups, showNext, users]);
+
   useEffect(() => {
     if (sessionUserId.current !== currentUserId) {
       sessionUserId.current = currentUserId;
       initialized.current = false;
+      groupsInitialized.current = false;
       knownIds.current.clear();
+      knownGroupIds.current.clear();
       queue.current = [];
       setNotice(null);
     }
@@ -57,6 +77,19 @@ export function NotificationExperience({ children }: { children: ReactNode }) {
     transactions.forEach((transaction) => knownIds.current.add(transaction.id));
     incoming.reverse().forEach(enqueue);
   }, [currentUserId, enqueue, receivedTransactionsReady, transactions]);
+
+  useEffect(() => {
+    if (!currentUserId || !groupHistoryReady) return;
+    const received = groupHistory.filter((transaction) => transaction.direction === 'received');
+    if (!groupsInitialized.current) {
+      received.forEach((transaction) => knownGroupIds.current.add(transaction.id));
+      groupsInitialized.current = true;
+      return;
+    }
+    const incoming = received.filter((transaction) => !knownGroupIds.current.has(transaction.id));
+    received.forEach((transaction) => knownGroupIds.current.add(transaction.id));
+    incoming.reverse().forEach(enqueueGroup);
+  }, [currentUserId, enqueueGroup, groupHistory, groupHistoryReady]);
 
   useEffect(() => {
     if (!notice) return;
@@ -116,9 +149,11 @@ function TransferBanner({ notice, onDismiss }: { notice: TransferNotice; onDismi
       >
         <View style={styles.badge}><Txt variant="title" color={colors.white}>E</Txt></View>
         <View style={styles.bannerCopy}>
-          <Txt variant="caption" color={colors.cyan400}>TRANSFERENCIA RECIBIDA</Txt>
-          <Txt variant="subtitle" color={colors.white}>{formatEuros(notice.transaction.amountInCents)}</Txt>
-          <Txt variant="caption" color={colors.gray200}>De {notice.payerName}</Txt>
+          <Txt variant="caption" color={colors.cyan400}>{notice.groupName ? 'REPARTO RECIBIDO' : 'TRANSFERENCIA RECIBIDA'}</Txt>
+          <Txt variant="subtitle" color={colors.white}>{formatEuros(notice.amountInCents)}</Txt>
+          <Txt variant="caption" color={colors.gray200}>
+            {notice.groupName ? `${notice.groupName} · De ${notice.payerName}` : `De ${notice.payerName}`}
+          </Txt>
         </View>
         <Txt variant="caption" color={colors.cyan400}>Ver</Txt>
       </Pressable>

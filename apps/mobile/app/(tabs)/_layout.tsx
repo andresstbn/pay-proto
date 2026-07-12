@@ -59,6 +59,13 @@ export default function TabsLayout() {
           tabBarIcon: ({ color }) => <MaterialIcons name="history" size={24} color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="groups"
+        options={{
+          title: 'Grupos',
+          tabBarIcon: ({ color }) => <MaterialIcons name="groups" size={24} color={color} />,
+        }}
+      />
     </Tabs>
   );
 }

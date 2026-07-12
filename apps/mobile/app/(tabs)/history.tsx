@@ -3,11 +3,22 @@ import { Pressable, ScrollView, TextInput, View } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { BrandHeader, Card, formatEuros, Txt } from '../../src/components/ui';
 import { useProtectedUser, useStore } from '../../src/domain/store';
+import { useGroups } from '../../src/groups/GroupProvider';
 import { colors, fonts, radius, spacing, typography } from '../../src/theme/theme';
-import { Transaction } from '../../src/domain/types';
 
 const FILTERS = ['Todos', 'Gastos', 'Ingresos'] as const;
 type Filter = (typeof FILTERS)[number];
+
+interface HistoryEntry {
+  id: string;
+  createdAt: number;
+  isSent: boolean;
+  isGroup: boolean;
+  title: string;
+  concept: string;
+  amountInCents: number;
+  recipientCount?: number;
+}
 
 function dayLabel(ts: number): string {
   const d = new Date(ts);
@@ -25,29 +36,59 @@ function dayLabel(ts: number): string {
 export default function History() {
   const user = useProtectedUser();
   const { transactions, users } = useStore();
+  const { history: groupHistory, groups: paymentGroups } = useGroups();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState<Filter>('Todos');
   if (!user) return null;
 
-  const own = transactions.filter((t) => t.payerId === user.id || t.recipientId === user.id);
+  const own = transactions.filter((t) => {
+    const qrType = (t as { qrType: string }).qrType;
+    return !qrType.startsWith('group_') && (t.payerId === user.id || t.recipientId === user.id);
+  });
+  const entries: HistoryEntry[] = [
+    ...own.map((transaction): HistoryEntry => {
+      const isSent = transaction.payerId === user.id;
+      const other = users[isSent ? transaction.recipientId : transaction.payerId];
+      return {
+        id: transaction.id,
+        createdAt: transaction.createdAt,
+        isSent,
+        isGroup: false,
+        title: isSent ? `Enviado a ${other?.displayName || 'Usuario'}` : `De: ${other?.displayName || 'Usuario'}`,
+        concept: transaction.concept || (isSent ? 'Pago por QR' : 'Transferencia'),
+        amountInCents: transaction.amountInCents,
+      };
+    }),
+    ...groupHistory.map((transaction): HistoryEntry => {
+      const groupName = transaction.groupName || paymentGroups.find((group) => group.id === transaction.groupId)?.name || 'Grupo';
+      return {
+        id: transaction.id,
+        createdAt: transaction.createdAt,
+        isSent: transaction.direction === 'sent',
+        isGroup: true,
+        title: transaction.direction === 'sent' ? `Pago a ${groupName}` : `Ingreso de ${groupName}`,
+        concept: transaction.concept || 'Reparto grupal',
+        amountInCents: transaction.visibleAmountInCents,
+        recipientCount: transaction.recipientCount,
+      };
+    }),
+  ].sort((a, b) => b.createdAt - a.createdAt);
 
   const q = query.trim().toLowerCase();
-  const visible = own.filter((t) => {
-    const isSent = t.payerId === user.id;
-    if (filter === 'Gastos' && !isSent) return false;
-    if (filter === 'Ingresos' && isSent) return false;
+  const visible = entries.filter((entry) => {
+    if (filter === 'Gastos' && !entry.isSent) return false;
+    if (filter === 'Ingresos' && entry.isSent) return false;
     if (!q) return true;
-    const other = users[isSent ? t.recipientId : t.payerId];
-    return (other?.displayName || '').toLowerCase().includes(q) || (t.concept || '').toLowerCase().includes(q);
+    return entry.title.toLowerCase().includes(q) || entry.concept.toLowerCase().includes(q);
   });
 
   // Agrupar por día preservando el orden (ya vienen ordenadas desc por fecha).
-  const groups: { label: string; items: Transaction[] }[] = [];
-  for (const t of visible) {
-    const label = dayLabel(t.createdAt);
-    const last = groups[groups.length - 1];
-    if (last && last.label === label) last.items.push(t);
-    else groups.push({ label, items: [t] });
+  const dayGroups: { label: string; items: HistoryEntry[] }[] = [];
+  for (const entry of visible) {
+    const label = dayLabel(entry.createdAt);
+    const last = dayGroups[dayGroups.length - 1];
+    if (last && last.label === label) last.items.push(entry);
+    else dayGroups.push({ label, items: [entry] });
   }
 
   return (
@@ -107,26 +148,24 @@ export default function History() {
       </View>
 
       <ScrollView contentContainerStyle={{ paddingHorizontal: spacing.lg, paddingBottom: spacing.xl, gap: spacing.xl }}>
-        {groups.length === 0 && (
+        {dayGroups.length === 0 && (
           <Card style={{ alignItems: 'center', padding: spacing.xxl }}>
             <MaterialIcons name="inbox" size={48} color={colors.gray500} style={{ marginBottom: spacing.sm }} />
             <Txt variant="body" color={colors.gray500} style={{ textAlign: 'center' }}>
-              {own.length === 0 ? 'Todavía no has realizado ninguna transacción.' : 'Sin resultados para esta búsqueda.'}
+              {entries.length === 0 ? 'Todavía no has realizado ninguna transacción.' : 'Sin resultados para esta búsqueda.'}
             </Txt>
           </Card>
         )}
 
-        {groups.map((g) => (
+        {dayGroups.map((g) => (
           <View key={g.label} style={{ gap: spacing.md }}>
             <Txt variant="body" color={colors.gray500} style={{ fontFamily: fonts.semibold, marginLeft: spacing.xs }}>
               {g.label}
             </Txt>
-            {g.items.map((t) => {
-              const isSent = t.payerId === user.id;
-              const other = users[isSent ? t.recipientId : t.payerId];
+            {g.items.map((entry) => {
               return (
                 <Card
-                  key={t.id}
+                  key={`${entry.isGroup ? 'group' : 'personal'}-${entry.id}`}
                   style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: spacing.lg, borderWidth: 0 }}
                 >
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, flex: 1 }}>
@@ -135,30 +174,31 @@ export default function History() {
                         width: 48,
                         height: 48,
                         borderRadius: 24,
-                        backgroundColor: isSent ? colors.gray50 : '#E4F6ED',
+                        backgroundColor: entry.isSent ? colors.gray50 : '#E4F6ED',
                         alignItems: 'center',
                         justifyContent: 'center',
                       }}
                     >
                       <MaterialIcons
-                        name={isSent ? 'north-east' : 'account-balance-wallet'}
+                      name={entry.isGroup ? 'groups' : entry.isSent ? 'north-east' : 'account-balance-wallet'}
                         size={22}
-                        color={isSent ? colors.navy900 : colors.green500}
+                      color={entry.isSent ? colors.navy900 : colors.green500}
                       />
                     </View>
                     <View style={{ flex: 1 }}>
                       <Txt variant="body" color={colors.navy900} style={{ fontFamily: fonts.semibold }}>
-                        {isSent ? `Enviado a ${other?.displayName || 'Usuario'}` : `De: ${other?.displayName || 'Usuario'}`}
+                        {entry.title}
                       </Txt>
                       <Txt variant="caption" color={colors.gray500}>
-                        {new Date(t.createdAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                        {new Date(entry.createdAt).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
                         {' • '}
-                        {t.concept || (isSent ? 'Pago por QR' : 'Transferencia')}
+                        {entry.concept}
+                        {entry.isGroup && entry.recipientCount ? ` · ${entry.recipientCount} receptores` : ''}
                       </Txt>
                     </View>
                   </View>
-                  <Txt variant="subtitle" color={isSent ? colors.navy900 : colors.green500} style={{ fontSize: 16 }}>
-                    {isSent ? '-' : '+'}{formatEuros(t.amountInCents)}
+                  <Txt variant="subtitle" color={entry.isSent ? colors.navy900 : colors.green500} style={{ fontSize: 16 }}>
+                    {entry.isSent ? '-' : '+'}{formatEuros(entry.amountInCents)}
                   </Txt>
                 </Card>
               );

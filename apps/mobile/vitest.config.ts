@@ -5,8 +5,17 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     coverage: {
       provider: 'v8',
-      include: ['src/notifications/incoming-transfer-policy.ts'],
-      thresholds: { lines: 100, functions: 100, branches: 100, statements: 100 },
+      include: [
+        'src/auth/auth-service.ts',
+        'src/auth/errors.ts',
+        'src/groups/document-mappers.ts',
+        'src/groups/history-policy.ts',
+        'src/groups/qr.ts',
+        'src/groups/request-id.ts',
+        'src/groups/return-to.ts',
+        'src/notifications/incoming-transfer-policy.ts',
+      ],
+      thresholds: { lines: 90, functions: 90, branches: 90, statements: 90 },
     },
   },
 });

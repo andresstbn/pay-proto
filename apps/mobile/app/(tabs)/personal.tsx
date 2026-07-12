@@ -1,20 +1,112 @@
-import QRCode from 'react-native-qrcode-svg';
-import { Pressable, Share, View } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { useRef, useState } from 'react';
+import QRCode from 'react-native-qrcode-svg';
+import { ActivityIndicator, PixelRatio, Platform, Pressable, View } from 'react-native';
+import { captureRef } from 'react-native-view-shot';
+
 import { BrandHeader, Txt } from '../../src/components/ui';
 import { useProtectedUser } from '../../src/domain/store';
 import { QrPayload } from '../../src/domain/types';
+import {
+  releasePersonalQrImage,
+  savePersonalQrImage,
+  sharePersonalQrImage,
+} from '../../src/qr/personal-qr-image';
 import { colors, fonts, spacing } from '../../src/theme/theme';
+
+type QrActionType = 'share' | 'save';
+type QrFeedback = { message: string; tone: 'error' | 'success' };
+
+const QR_EXPORT_PIXELS = 1024;
 
 // QR personal de monto abierto (SPEC-001 §5, RF-001 §8). Estable y reutilizable —
 // no cambia de estado con cada pago.
 export default function PersonalQr() {
   const user = useProtectedUser();
+  const qrCaptureRef = useRef<View | null>(null);
+  const [activeAction, setActiveAction] = useState<QrActionType | null>(null);
+  const [feedback, setFeedback] = useState<QrFeedback | null>(null);
   if (!user) return null;
 
   const payload: QrPayload = { app: 'ericpay', type: 'personal', userId: user.id };
   const handle = '@' + user.displayName.trim().toLowerCase().replace(/\s+/g, '.');
+  const exportSize = Platform.OS === 'ios'
+    ? Math.round(QR_EXPORT_PIXELS / PixelRatio.get())
+    : QR_EXPORT_PIXELS;
+
+  async function handleQrAction(action: QrActionType) {
+    if (activeAction) return;
+
+    const startedAt = Date.now();
+    let imageUri: string | null = null;
+    setActiveAction(action);
+    setFeedback(null);
+    console.info({
+      event: 'personal_qr_image_action',
+      provider: Platform.OS,
+      status: 'started',
+      step: action,
+    });
+
+    try {
+      if (!qrCaptureRef.current) throw new Error('qr/capture-not-ready');
+      imageUri = await captureRef(qrCaptureRef, {
+        format: 'png',
+        height: exportSize,
+        quality: 1,
+        result: Platform.OS === 'web' ? 'data-uri' : 'tmpfile',
+        width: exportSize,
+      });
+
+      const outcome = action === 'share'
+        ? await sharePersonalQrImage(imageUri)
+        : await savePersonalQrImage(imageUri);
+
+      setFeedback({
+        message: outcome === 'downloaded'
+          ? 'Tu navegador no permite compartir archivos; descargamos el QR.'
+          : action === 'share'
+            ? 'QR listo para compartir.'
+            : Platform.OS === 'web'
+              ? 'QR descargado.'
+              : 'QR guardado en Fotos.',
+        tone: 'success',
+      });
+      console.info({
+        durationMs: Date.now() - startedAt,
+        event: 'personal_qr_image_action',
+        provider: Platform.OS,
+        status: 'completed',
+        step: action,
+      });
+    } catch (error) {
+      const errorCode = qrActionErrorCode(error);
+      if (errorCode === 'AbortError') {
+        console.info({
+          durationMs: Date.now() - startedAt,
+          errorCode: 'cancelled',
+          event: 'personal_qr_image_action',
+          provider: Platform.OS,
+          status: 'degraded',
+          step: action,
+        });
+      } else {
+        console.warn({
+          durationMs: Date.now() - startedAt,
+          errorCode,
+          event: 'personal_qr_image_action',
+          provider: Platform.OS,
+          status: 'failed',
+          step: action,
+        });
+        setFeedback({ message: qrActionErrorMessage(errorCode, action), tone: 'error' });
+      }
+    } finally {
+      setActiveAction(null);
+      if (imageUri) releasePersonalQrImage(imageUri);
+    }
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.navy900 }}>
@@ -55,7 +147,11 @@ export default function PersonalQr() {
           </View>
 
           <View style={{ backgroundColor: colors.gray100, borderRadius: 16, padding: spacing.lg, marginTop: spacing.md, marginBottom: spacing.xl }}>
-            <View style={{ backgroundColor: colors.white, borderRadius: 12, padding: spacing.md }}>
+            <View
+              collapsable={false}
+              ref={qrCaptureRef}
+              style={{ backgroundColor: colors.white, borderRadius: 12, padding: spacing.md }}
+            >
               <QRCode value={JSON.stringify(payload)} size={190} color={colors.navy900} backgroundColor={colors.white} />
             </View>
           </View>
@@ -72,19 +168,94 @@ export default function PersonalQr() {
           <QrAction
             icon="share"
             label="Compartir"
-            onPress={() => Share.share({ message: `Págame con EricPay — soy ${user.displayName} (${handle}). Escanea mi QR personal desde la app.` })}
+            disabled={activeAction !== null}
+            loading={activeAction === 'share'}
+            onPress={() => handleQrAction('share')}
           />
-          {/* ponytail: Guardar decorativo — guardar imagen requiere media library, fuera de esta fase */}
-          <QrAction icon="download" label="Guardar" />
+          <QrAction
+            icon="download"
+            label="Guardar"
+            disabled={activeAction !== null}
+            loading={activeAction === 'save'}
+            onPress={() => handleQrAction('save')}
+          />
         </View>
+
+        {feedback ? (
+          <View
+            accessibilityLiveRegion="polite"
+            style={{ alignItems: 'center', flexDirection: 'row', gap: spacing.sm, marginTop: spacing.md }}
+          >
+            <MaterialIcons
+              name={feedback.tone === 'success' ? 'check-circle-outline' : 'error-outline'}
+              size={18}
+              color={feedback.tone === 'success' ? colors.green500 : colors.red500}
+            />
+            <Txt
+              variant="caption"
+              color={feedback.tone === 'success' ? colors.green500 : colors.red500}
+              style={{ maxWidth: 280, textAlign: 'center' }}
+            >
+              {feedback.message}
+            </Txt>
+          </View>
+        ) : null}
       </LinearGradient>
     </View>
   );
 }
 
-function QrAction({ icon, label, onPress }: { icon: 'share' | 'download'; label: string; onPress?: () => void }) {
+function qrActionErrorCode(error: unknown) {
+  if (!(error instanceof Error)) return 'unknown';
+  return error.message.startsWith('qr/') ? error.message.slice(3) : error.name;
+}
+
+function qrActionErrorMessage(errorCode: string, action: QrActionType) {
+  if (errorCode === 'permission-denied') {
+    return 'Necesito permiso para guardar el QR en Fotos.';
+  }
+  if (errorCode === 'sharing-unavailable') {
+    return 'Este dispositivo no permite compartir archivos.';
+  }
+  if (errorCode === 'media-library-unavailable') {
+    return 'No encuentro una galería disponible para guardar el QR.';
+  }
+  if (errorCode === 'capture-not-ready') {
+    return 'El QR todavía se está preparando. Inténtalo de nuevo.';
+  }
+  if (errorCode === 'download-unavailable') {
+    return 'Este navegador no permite descargar el QR.';
+  }
+  return action === 'share'
+    ? 'No se pudo compartir el QR. Inténtalo de nuevo.'
+    : 'No se pudo guardar el QR. Inténtalo de nuevo.';
+}
+
+function QrAction({
+  icon,
+  label,
+  disabled,
+  loading,
+  onPress,
+}: {
+  icon: 'share' | 'download';
+  label: string;
+  disabled: boolean;
+  loading: boolean;
+  onPress: () => void;
+}) {
   return (
-    <Pressable onPress={onPress} style={({ pressed }) => [{ alignItems: 'center', gap: spacing.xs }, pressed && !!onPress && { transform: [{ scale: 0.92 }] }]}>
+    <Pressable
+      accessibilityLabel={label}
+      accessibilityRole="button"
+      accessibilityState={{ busy: loading, disabled }}
+      disabled={disabled}
+      onPress={onPress}
+      style={({ pressed }) => [
+        { alignItems: 'center', gap: spacing.xs, opacity: disabled && !loading ? 0.55 : 1 },
+        pressed && !disabled && { transform: [{ scale: 0.92 }] },
+      ]}
+    >
       <View
         style={{
           width: 48,
@@ -97,7 +268,11 @@ function QrAction({ icon, label, onPress }: { icon: 'share' | 'download'; label:
           justifyContent: 'center',
         }}
       >
-        <MaterialIcons name={icon} size={22} color={colors.white} />
+        {loading ? (
+          <ActivityIndicator color={colors.white} size="small" />
+        ) : (
+          <MaterialIcons name={icon} size={22} color={colors.white} />
+        )}
       </View>
       <Txt variant="caption" color="rgba(255,255,255,0.7)" style={{ fontFamily: fonts.semibold }}>{label}</Txt>
     </Pressable>

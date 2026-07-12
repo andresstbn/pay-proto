@@ -142,3 +142,29 @@ Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear 
 **Contexto:** El APK generado con EAS Build crasheaba al abrir. Causa: `.env` está en `.gitignore` y EAS no sube archivos ignorados por git, así que las `EXPO_PUBLIC_FIREBASE_*` llegaban `undefined` al bundle y `initializeApp` lanzaba excepción al importar `firebase.ts`. Alternativas: variables de entorno en el dashboard de EAS (`eas env:create`) o hardcodear la config en `eas.json`.
 **Decisión:** Añadir `.easignore` en la raíz (copia de `.gitignore` sin la línea `.env`), de modo que el `.env` viaje con el build de nube. La config web de Firebase no es secreta — son identificadores públicos, protegen las reglas de Firestore, no la API key. Es la opción sin dependencia del dashboard ni de estado remoto.
 **Consecuencias:** Los próximos `eas build` inyectan las variables correctamente. Si algún día hay secretos de verdad en `.env`, esos sí deben ir como variables de EAS, no por esta vía. Nota operativa aparte: instalar un build local (keystore debug) sobre uno de nube (keystore EAS) requiere desinstalar antes (`adb uninstall com.andresstbn.ericpay`) — las firmas no coinciden.
+
+## D-016 — Acceso social nativo mediante development builds (reemplaza D-014)
+
+**Fecha:** 2026-07-12
+**Contexto:** El acceso rápido solicitado debe usar realmente Google, Facebook o Apple y conservar email como respaldo. Expo Go no puede completar de forma fiable los redirects OAuth con el esquema propio ni incluir Sign in with Apple.
+**Decisión:** Google y Facebook se integran en iOS, Android y Web; Apple en iOS y Web. Web usa los proveedores de Firebase y popup. Móvil usa `expo-auth-session` con PKCE cuando el proveedor lo soporta, redirects `ericpay://oauth/*` y un development build. Los conflictos por email se resuelven iniciando sesión con el acceso existente y vinculando la nueva credencial al mismo UID. Las credenciales pendientes viven solo en memoria.
+**Consecuencias:** Email/contraseña sigue disponible en todas las plataformas y Expo Go continúa sirviendo para ese flujo, pero probar OAuth móvil exige configurar los proveedores externos y reconstruir el development build. Ningún App Secret o clave privada se guarda en el cliente.
+
+## D-017 — Repartos grupales privados, atómicos e idempotentes
+
+**Fecha:** 2026-07-12
+**Contexto:** Un ingreso de grupo modifica varios saldos y debe excluir al pagador, respetar miembros activos, repartir céntimos justamente y soportar reintentos sin duplicar dinero ficticio.
+**Decisión:** Cada grupo privado admite hasta 20 miembros, roles propietario/administrador/miembro y participación individual activa o en pausa. `payGroup` calcula el reparto vigente en backend, rota los céntimos sobrantes y escribe débitos, créditos, movimiento del pagador, recibos privados por receptor, actividad e idempotencia dentro de una única transacción Firestore. El movimiento público para el pagador no incluye IDs ni asignaciones de miembros. El cliente no puede escribir estas colecciones directamente.
+**Consecuencias:** No existen estados parciales ante fallos o concurrencia. Repetir el mismo `clientRequestId` devuelve el resultado original; reutilizarlo con otro payload se rechaza. El despliegue requiere publicar conjuntamente funciones, reglas e índices de Firestore.
+
+## I-005 — Acceso social y grupos con reparto automático
+
+**Fecha:** 2026-07-12
+**Qué quedó funcionando:** Login renovado con Google, Facebook, Apple y email; sincronización segura del perfil propio; quinta pestaña de Grupos; creación, invitación, unión, roles, participación y archivado; QR grupal abierto y QRs fijos; previsualización y pago con reparto atómico; historial con la parte visible para cada receptor y notificaciones foreground. Los payloads QR anteriores siguen siendo compatibles. La lógica crítica quedó cubierta por tests unitarios/integración y las reglas privadas por tests contra el emulador de Firestore.
+
+## D-018 — El dashboard exige un custom claim administrativo
+
+**Fecha:** 2026-07-12
+**Contexto:** La ruta oculta `/dashboard` y la autenticación básica no impiden que una cuenta normal invoque directamente `adminGetDashboardData`, que devuelve información global y elude deliberadamente las reglas de lectura por usuario.
+**Decisión:** El callable comprueba en backend el custom claim booleano `admin: true` antes de consultar datos. Cualquier otro valor o ausencia del claim devuelve `permission-denied`.
+**Consecuencias:** Un administrador debe recibir el claim mediante un entorno privilegiado con Firebase Admin SDK y renovar su ID token antes de abrir el panel. Las cuentas normales ya no pueden usar el endpoint aunque conozcan su nombre o la ruta.

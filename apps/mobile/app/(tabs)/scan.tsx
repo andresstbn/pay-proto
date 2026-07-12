@@ -7,6 +7,9 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Avatar, Button, formatEuros, Txt } from '../../src/components/ui';
 import { liveStatus, useProtectedUser, useStore } from '../../src/domain/store';
 import { QrPayload } from '../../src/domain/types';
+import { GROUP_QR_KIND, GROUP_QR_STATUS, GROUP_QR_TYPE } from '../../src/groups/constants';
+import { useGroups } from '../../src/groups/GroupProvider';
+import { groupFixedQrPayload, groupOpenQrPayload, parseEricPayQr } from '../../src/groups/qr';
 import { colors, fonts, spacing } from '../../src/theme/theme';
 
 const FRAME = 240;
@@ -14,6 +17,7 @@ const FRAME = 240;
 export default function Scan() {
   const user = useProtectedUser();
   const { users, oneTimeRequests, reusableQrs } = useStore();
+  const { groups, qrsByGroup } = useGroups();
   const router = useRouter();
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
@@ -51,18 +55,18 @@ export default function Scan() {
       router.push({ pathname: '/pay/confirm', params: { kind: 'one_time', requestId: payload.id } });
     } else if (payload.type === 'personal') {
       router.push({ pathname: '/pay/amount', params: { recipientId: payload.userId } });
-    } else {
+    } else if (payload.type === 'reusable') {
       router.push({ pathname: '/pay/confirm', params: { kind: 'reusable', qrId: payload.id } });
+    } else if (payload.type === GROUP_QR_TYPE.OPEN) {
+      router.push({ pathname: '/groups/pay/amount', params: { groupId: payload.groupId } });
+    } else {
+      router.push({ pathname: '/groups/pay/confirm', params: { qrId: payload.qrId } });
     }
   }
 
   function onBarcodeScanned({ data }: { data: string }) {
-    try {
-      const payload = JSON.parse(data) as QrPayload;
-      route(payload);
-    } catch {
-      // Ignorar QRs ajenos
-    }
+    const payload = parseEricPayQr(data);
+    if (payload) route(payload);
   }
 
   const otherUsers = Object.values(users).filter((u) => u.id !== user.id);
@@ -70,6 +74,9 @@ export default function Scan() {
     (r) => r.recipientId !== user.id && liveStatus(r) === 'pending'
   );
   const activeReusables = Object.values(reusableQrs).filter((q) => q.ownerId !== user.id && q.status === 'active');
+  const activeGroupQrs = groups.flatMap((group) => (qrsByGroup[group.id] ?? []).filter(
+    (qr) => qr.type === GROUP_QR_KIND.FIXED && qr.status === GROUP_QR_STATUS.ACTIVE,
+  ).map((qr) => ({ group, qr })));
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.navy900 }}>
@@ -192,7 +199,36 @@ export default function Scan() {
                 </SimRow>
               );
             })}
-            {otherUsers.length + pendingRequests.length + activeReusables.length === 0 && (
+            {groups.map((group) => (
+              <SimRow
+                key={`go-${group.id}`}
+                onPress={() => route(groupOpenQrPayload(group.id))}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cyan400 }}>
+                  <MaterialIcons name="groups" size={20} color={colors.navy900} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Txt variant="body" color={colors.white} style={{ fontFamily: fonts.semibold }}>{group.name}</Txt>
+                  <Txt variant="caption" color="rgba(255,255,255,0.6)">QR grupal · monto libre</Txt>
+                </View>
+              </SimRow>
+            ))}
+            {activeGroupQrs.map(({ group, qr }) => (
+              <SimRow
+                key={`gf-${qr.id}`}
+                onPress={() => route(groupFixedQrPayload(qr.id))}
+              >
+                <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.yellow300 }}>
+                  <MaterialIcons name="qr-code-2" size={20} color={colors.navy900} />
+                </View>
+                <View style={{ flex: 1 }}>
+                  <Txt variant="body" color={colors.white} style={{ fontFamily: fonts.semibold }}>{qr.name}</Txt>
+                  <Txt variant="caption" color="rgba(255,255,255,0.6)">{group.name}</Txt>
+                </View>
+                <Txt variant="subtitle" color={colors.yellow300} style={{ fontSize: 15 }}>{formatEuros(qr.amountInCents)}</Txt>
+              </SimRow>
+            ))}
+            {otherUsers.length + pendingRequests.length + activeReusables.length + groups.length + activeGroupQrs.length === 0 && (
               <Txt variant="caption" color="rgba(255,255,255,0.6)">No hay nada para escanear en este momento.</Txt>
             )}
           </ScrollView>

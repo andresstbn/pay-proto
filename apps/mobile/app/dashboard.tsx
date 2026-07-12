@@ -59,9 +59,16 @@ export default function Dashboard() {
       } else {
         setError('Error al procesar la respuesta del servidor.');
       }
-    } catch (err: any) {
-      console.error(err);
-      setError(err.message || 'Error de conexión al obtener los datos.');
+    } catch (err: unknown) {
+      const errorCode = err && typeof err === 'object' && 'code' in err && typeof err.code === 'string'
+        ? err.code.slice(0, 80)
+        : 'unknown';
+      console.warn({ event: 'admin_dashboard_load', status: 'failed', errorCode });
+      setError(
+        errorCode.includes('permission-denied')
+          ? 'Tu cuenta no tiene permisos de administración.'
+          : 'Error de conexión al obtener los datos.',
+      );
     } finally {
       setLoading(false);
     }

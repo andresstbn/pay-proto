@@ -2,9 +2,31 @@ import { initializeApp } from 'firebase-admin/app';
 import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import * as functions from 'firebase-functions/v1';
+import { hasAdminClaim } from './auth/admin-policy';
+import { createSyncOwnProfile } from './auth/profile';
+import { FirestoreProfileRepository } from './auth/profile-repository';
+import { ProfileService } from './auth/profile-service';
+import { createGroupFunctions } from './groups';
 
 initializeApp();
 const db = getFirestore();
+const groupFunctions = createGroupFunctions(db);
+const profileService = new ProfileService(new FirestoreProfileRepository(db));
+
+export const createGroup = groupFunctions.createGroup;
+export const rotateGroupInvite = groupFunctions.rotateGroupInvite;
+export const joinGroup = groupFunctions.joinGroup;
+export const setGroupParticipation = groupFunctions.setGroupParticipation;
+export const setGroupMemberRole = groupFunctions.setGroupMemberRole;
+export const removeGroupMember = groupFunctions.removeGroupMember;
+export const leaveGroup = groupFunctions.leaveGroup;
+export const transferGroupOwnership = groupFunctions.transferGroupOwnership;
+export const archiveGroup = groupFunctions.archiveGroup;
+export const createGroupFixedQr = groupFunctions.createGroupFixedQr;
+export const deactivateGroupQr = groupFunctions.deactivateGroupQr;
+export const previewGroupPayment = groupFunctions.previewGroupPayment;
+export const payGroup = groupFunctions.payGroup;
+export const syncOwnProfile = createSyncOwnProfile(profileService);
 
 // Helper to generate custom IDs (like those in domain/store.tsx)
 function generateId(prefix: string): string {
@@ -16,30 +38,10 @@ function generateId(prefix: string): string {
 export const onUserCreated = functions.auth.user().onCreate(async (user) => {
   if (!user) return;
 
-  const uid = user.uid;
-  const userRef = db.collection('users').doc(uid);
-
-  const doc = await userRef.get();
-  if (doc.exists) return; // Si ya existe, no hacemos nada.
-
-  // Nombre inicial: displayName, o extraído del email, o 'Usuario'
-  let displayName = user.displayName;
-  if (!displayName && user.email) {
-    displayName = user.email.split('@')[0];
-  }
-  if (!displayName) {
-    displayName = 'Usuario';
-  }
-
-  await userRef.set({
-    id: uid,
-    displayName: displayName,
-    email: user.email || '',
-    photoUrl: user.photoURL || '',
-    balanceInCents: 100_000, // Saldo inicial: €1.000,00 (RF-001 §5)
-    currency: 'EUR',
-    createdAt: FieldValue.serverTimestamp(),
-  });
+  await profileService.ensureProfile(
+    { userId: user.uid, email: user.email },
+    { displayName: user.displayName, photoUrl: user.photoURL },
+  );
 });
 
 // 2. Cloud Function: Crear cobro puntual (OneTimeRequest)
@@ -421,6 +423,9 @@ export const adminGetDashboardData = onCall(async (request) => {
   if (!auth) {
     throw new HttpsError('unauthenticated', 'El usuario debe estar autenticado.');
   }
+  if (!hasAdminClaim(auth.token)) {
+    throw new HttpsError('permission-denied', 'Se requiere acceso de administrador.');
+  }
 
   try {
     // 1. Obtener todos los usuarios
@@ -465,8 +470,7 @@ export const adminGetDashboardData = onCall(async (request) => {
       users: usersList,
       transactions: transactionsList,
     };
-  } catch (err: any) {
-    throw new HttpsError('internal', err.message || 'Error al obtener datos del dashboard.');
+  } catch {
+    throw new HttpsError('internal', 'Error al obtener datos del dashboard.');
   }
 });
-

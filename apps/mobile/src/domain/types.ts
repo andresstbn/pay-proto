@@ -53,4 +53,6 @@ export interface Transaction {
 export type QrPayload =
   | { app: 'ericpay'; type: 'one_time'; id: string }
   | { app: 'ericpay'; type: 'personal'; userId: string }
-  | { app: 'ericpay'; type: 'reusable'; id: string };
+  | { app: 'ericpay'; type: 'reusable'; id: string }
+  | { app: 'ericpay'; version: 1; type: 'group_open'; groupId: string }
+  | { app: 'ericpay'; version: 1; type: 'group_fixed'; qrId: string };

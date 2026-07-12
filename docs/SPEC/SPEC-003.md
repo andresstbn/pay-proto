@@ -11,7 +11,7 @@ Este dashboard sigue las pautas visuales definidas en [DESIGN.md](../../DESIGN.m
 ### 2.1 Acceso y Seguridad
 - **Ruta:** Accesible mediante la ruta `/dashboard` (p. ej. `http://localhost:8081/dashboard`).
 - **Restricción de plataforma:** Si se intenta cargar esta ruta en un dispositivo móvil (iOS/Android), mostrará una pantalla informativa: "Panel de control reservado para la versión web".
-- **Restricción de autenticación:** El usuario debe estar autenticado en el sistema para poder cargar el dashboard.
+- **Restricción de autenticación:** El usuario debe estar autenticado y su token de Firebase debe incluir el custom claim booleano `admin: true`. Una ruta oculta no constituye autorización.
 
 ### 2.2 Panel de Usuarios
 - Muestra el listado de todos los usuarios registrados en el sistema.
@@ -83,7 +83,7 @@ El dashboard mantendrá la estética de EricPay usando la paleta definida:
 
 ### 5.2 Pruebas Manuales
 1. Iniciar el servidor web de desarrollo de Expo.
-2. Iniciar sesión en la aplicación con una cuenta de prueba.
+2. Asignar `admin: true` mediante Firebase Admin SDK a una cuenta de prueba, renovar su ID token e iniciar sesión.
 3. Navegar directamente ingresando la URL `/dashboard` en el navegador.
 4. Confirmar que se visualizan correctamente:
    - Tarjetas superiores con KPIs.
@@ -91,3 +91,4 @@ El dashboard mantendrá la estética de EricPay usando la paleta definida:
    - Listado completo de transacciones realizadas en el sistema (incluyendo transacciones entre cuentas de prueba distintas).
 5. Realizar una transacción de prueba en otro navegador o emulador y pulsar "Recargar" o comprobar que al recargar el dashboard se refleja el nuevo estado.
 6. Entrar a la ruta `/dashboard` desde la simulación de un dispositivo móvil (o achicar ventana/probar con User-Agent de móvil si es necesario) para asegurar que el aviso de bloqueo por plataforma funciona.
+7. Iniciar sesión con una cuenta autenticada sin el claim y confirmar que el callable responde `permission-denied` sin devolver datos.

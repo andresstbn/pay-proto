@@ -8,6 +8,12 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function isGroupMember(groupId) {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/groups/$(groupId)) &&
+        request.auth.uid in get(/databases/$(database)/documents/groups/$(groupId)).data.memberIds;
+    }
+
     // Perfiles de usuario:
     // Lectura permitida para cualquier usuario autenticado (para verificar la contraparte al escanear/pagar).
     // Escritura completamente prohibida desde el cliente (el saldo y perfil se crean/modifican en el backend).
@@ -38,10 +44,46 @@ service cloud.firestore {
     // Escritura completamente prohibida (creado únicamente por Cloud Functions).
     match /transactions/{transactionId} {
       allow read: if isAuthenticated() && (
-        request.auth.uid == resource.data.payerId || 
-        request.auth.uid == resource.data.recipientId
+        request.auth.uid == resource.data.payerId ||
+        (
+          resource.data.keys().hasAny(['recipientId']) &&
+          request.auth.uid == resource.data.recipientId
+        )
       );
       allow write: if false;
+    }
+
+    // Un recibo grupal contiene únicamente la parte del receptor autenticado.
+    match /groupReceipts/{receiptId} {
+      allow read: if isAuthenticated() && request.auth.uid == resource.data.recipientId;
+      allow write: if false;
+    }
+
+    // Grupos privados y sus QRs/actividad: solo los miembros actuales pueden leerlos.
+    // Toda mutación pasa por Cloud Functions para preservar permisos, límites y atomicidad.
+    match /groups/{groupId} {
+      allow read: if isAuthenticated() && request.auth.uid in resource.data.memberIds;
+      allow write: if false;
+    }
+
+    match /groupQrs/{qrId} {
+      allow read: if isGroupMember(resource.data.groupId);
+      allow write: if false;
+    }
+
+    match /groupActivity/{activityId} {
+      allow read: if isGroupMember(resource.data.groupId);
+      allow write: if false;
+    }
+
+    // Los códigos se comparan por hash exclusivamente en backend.
+    match /groupInvites/{inviteHash} {
+      allow read, write: if false;
+    }
+
+    // Registros internos de idempotencia; nunca forman parte del API cliente.
+    match /groupPaymentRequests/{requestId} {
+      allow read, write: if false;
     }
   }
 }

@@ -7,7 +7,7 @@
     "mobile:android": "pnpm --filter mobile android",
     "mobile:ios": "pnpm --filter mobile ios",
     "mobile:web": "pnpm --filter mobile web",
-    "backend:deploy": "pnpm --filter backend deploy",
+    "backend:deploy": "pnpm --filter backend run deploy",
     "eas-build-pre-install": "corepack enable"
   },
   "packageManager": "pnpm@9.4.0"

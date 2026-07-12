@@ -11,6 +11,7 @@ import {
   HankenGrotesk_800ExtraBold,
 } from '@expo-google-fonts/hanken-grotesk';
 import { StoreProvider } from '../src/domain/store';
+import { GroupProvider } from '../src/groups/GroupProvider';
 import { NotificationExperience } from '../src/notifications/NotificationExperience';
 import { NotificationPreferencesProvider } from '../src/notifications/notification-preferences';
 
@@ -35,18 +36,20 @@ export default function RootLayout() {
   return (
     <NotificationPreferencesProvider>
       <StoreProvider>
-        <NotificationExperience>
-          <StatusBar style="light" />
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              animation: reduceMotion ? 'none' : 'fade_from_bottom',
-              animationDuration: reduceMotion ? 0 : 260,
-              animationTypeForReplace: 'push',
-              gestureEnabled: true,
-            }}
-          />
-        </NotificationExperience>
+        <GroupProvider>
+          <NotificationExperience>
+            <StatusBar style="light" />
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                animation: reduceMotion ? 'none' : 'fade_from_bottom',
+                animationDuration: reduceMotion ? 0 : 260,
+                animationTypeForReplace: 'push',
+                gestureEnabled: true,
+              }}
+            />
+          </NotificationExperience>
+        </GroupProvider>
       </StoreProvider>
     </NotificationPreferencesProvider>
   );

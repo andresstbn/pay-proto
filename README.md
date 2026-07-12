@@ -84,6 +84,13 @@ pnpm install
      ```
      *(Abre la app **Expo Go** en tu iPhone/Android y escanea el código QR de la terminal. Asegúrate de estar en la misma red Wi-Fi).*
 
+> Email/contraseña sigue funcionando en Expo Go. Google/Facebook/Apple en móvil
+> requieren un **development build**, porque OAuth necesita el esquema propio
+> `ericpay://`. Configura los tres identificadores públicos adicionales de
+> `apps/mobile/.env.example`, habilita los proveedores en Firebase y ejecuta el
+> perfil `development` de EAS. Apple se muestra en iOS y Web; Google/Facebook en
+> iOS, Android y Web. Ningún App Secret o clave privada debe guardarse en `.env`.
+
 ---
 
 ## 📦 Compilar la App de Android

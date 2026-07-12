@@ -26,10 +26,21 @@
           "resizeMode": "contain"
         }
       ],
-      "expo-asset"
+      "expo-asset",
+      "expo-web-browser",
+      "expo-apple-authentication",
+      [
+        "expo-media-library",
+        {
+          "photosPermission": false,
+          "savePhotosPermission": "Permitir que EricPay guarde tu código QR en Fotos.",
+          "granularPermissions": []
+        }
+      ]
     ],
     "ios": {
       "supportsTablet": true,
+      "usesAppleSignIn": true,
       "bundleIdentifier": "com.andresstbn.ericpay"
     },
     "android": {

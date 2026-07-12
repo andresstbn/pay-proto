@@ -31,6 +31,8 @@ import {
 export type Result = { ok: true } | { ok: false; error: string };
 export type CreateResult = { ok: true; id: string } | { ok: false; error: string };
 
+const GROUP_QR_TYPES = new Set(['group_open', 'group_fixed']);
+
 interface StoreState {
   users: Record<string, User>;
   oneTimeRequests: Record<string, OneTimeRequest>;
@@ -171,8 +173,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!uid) return;
 
-    const txnFromDoc = (d: QueryDocumentSnapshot): Transaction => {
+    const txnFromDoc = (d: QueryDocumentSnapshot): Transaction | null => {
       const data = d.data();
+      if (GROUP_QR_TYPES.has(data.qrType)) return null;
       return {
         id: d.id,
         qrType: data.qrType,
@@ -197,11 +200,17 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     };
 
     const unsubSent = onSnapshot(query(collection(db, 'transactions'), where('payerId', '==', uid)), (snap) => {
-      sentTxns = snap.docs.map(txnFromDoc);
+      sentTxns = snap.docs.flatMap((doc) => {
+        const transaction = txnFromDoc(doc);
+        return transaction ? [transaction] : [];
+      });
       updateTransactions();
     });
     const unsubRcvd = onSnapshot(query(collection(db, 'transactions'), where('recipientId', '==', uid)), (snap) => {
-      rcvdTxns = snap.docs.map(txnFromDoc);
+      rcvdTxns = snap.docs.flatMap((doc) => {
+        const transaction = txnFromDoc(doc);
+        return transaction ? [transaction] : [];
+      });
       updateTransactions();
       setState((s) => ({ ...s, receivedTransactionsReady: true }));
     });
@@ -299,16 +308,19 @@ export function useCurrentUser(): User | null {
   return currentUserId ? users[currentUserId] : null;
 }
 
-export function useProtectedUser(): User | null {
+export function useProtectedUser(returnTo?: string): User | null {
   const user = useCurrentUser();
   const { loading, currentUserId } = useStore();
   const router = useRouter();
 
   useEffect(() => {
     if (!loading && currentUserId === null) {
-      router.replace('/login');
+      router.replace({
+        pathname: '/login',
+        params: returnTo ? { returnTo } : undefined,
+      });
     }
-  }, [currentUserId, loading]);
+  }, [currentUserId, loading, returnTo, router]);
 
   return user;
 }

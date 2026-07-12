@@ -3,6 +3,8 @@
   "scripts": {
     "build": "tsc",
     "build:watch": "tsc --watch",
+    "test": "pnpm run build && node --test \"lib/auth/__tests__/*.test.js\" \"lib/groups/__tests__/*.test.js\"",
+    "test:coverage": "pnpm run build && node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-functions=90 --test-coverage-branches=90 \"lib/auth/__tests__/*.test.js\" \"lib/groups/__tests__/*.test.js\"",
     "serve": "npm run build && firebase emulators:start --only functions",
     "shell": "npm run build && firebase functions:shell",
     "start": "npm run shell",
