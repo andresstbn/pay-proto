@@ -28,7 +28,7 @@ Regla de contraste: texto sobre `navy900`/`blue600` siempre `white`. Texto sobre
 
 ## Tipografía
 
-Fuente del sistema (San Francisco en iOS, Roboto en Android vía React Native por defecto). No se añade una tipografía custom — no aporta a un prototipo que se descarta en Fase 1.
+**Hanken Grotesk** (Google Fonts, vía `@expo-google-fonts/hanken-grotesk`) en pesos 400/600/700/800. Sustituye a la fuente del sistema de la Fase 0: el rediseño visual aprobado (D-013) la usa en toda la UI y es parte de la identidad. En React Native cada peso es una familia distinta — usar los tokens `fonts.*` de `src/theme/theme.ts`, nunca `fontWeight` sobre texto con fuente custom.
 
 | Estilo | Tamaño / peso | Uso |
 |---|---|---|
@@ -58,12 +58,19 @@ Fuente del sistema (San Francisco en iOS, Roboto en Android vía React Native po
 
 **Item de historial** — fila simple: avatar/inicial circular, nombre + concepto (`body`/`caption`), monto alineado a la derecha en `subtitle` (verde si entra, `gray900` si sale, con signo `+`/`-`).
 
+## Estructura y navegación
+
+Las cuatro pantallas principales (Home, Escanear, QR Personal, Historial) viven en una barra de tabs inferior: fondo blanco, esquinas superiores redondeadas, icono + etiqueta, activo en `blue600`, inactivo en `gray500`. Los flujos (cobrar, pagar, QRs reutilizables) se apilan encima como pantallas de stack.
+
+**Header de marca** (componente `BrandHeader`): degradado horizontal `navy900` → `navy700`, avatar con borde `cyan400` de 2px, wordmark "EricPay" en blanco, campana a la derecha. Presente en Home (con saludo según hora), QR Personal e Historial.
+
 ## Dónde se usa el navy oscuro
 
-Solo en: pantalla de login, header de la pantalla principal (la card de saldo), y la pantalla de QR a pantalla completa (cobro puntual, QR personal, QR reutilizable). El resto de pantallas (formularios, confirmación, historial, escaneo) van sobre `gray50` — un fintech de uso diario no puede ser oscuro en todas partes, cansa y reduce legibilidad de montos y formularios.
+En: pantalla de login, el header de marca de las pantallas principales, la card de saldo del Home, y las pantallas a pantalla completa de QR (cobro puntual, QR personal, QR reutilizable) y de escaneo (cámara con overlay navy). El cuerpo de Home e Historial y los formularios van sobre `gray50` — un fintech de uso diario no puede ser oscuro en todas partes, cansa y reduce legibilidad de montos y formularios.
 
 ## Qué no hacer
 
-- No usar `cyan400` como color de texto de cuerpo — falla contraste sobre blanco.
+- No usar `cyan400` como color de texto de cuerpo sobre blanco — falla contraste (sobre navy sí se permite en frases cortas de acento, como hace el rediseño).
 - No poner dos botones `blue600` en la misma pantalla compitiendo por atención.
-- No añadir gradientes o el efecto "glow" fuera de las tres pantallas de marca listadas arriba — si todo brilla, nada destaca.
+- No añadir gradientes o el efecto "glow" fuera de los usos de navy listados arriba — si todo brilla, nada destaca.
+- No usar `fontWeight` en estilos: con Hanken Grotesk el peso se elige con la familia (`fonts.regular/semibold/bold/extrabold`).
