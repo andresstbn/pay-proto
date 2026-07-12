@@ -3,7 +3,6 @@ export type Currency = 'EUR';
 export interface User {
   id: string;
   displayName: string;
-  initial: string;
   balanceInCents: number;
   currency: Currency;
   photoUrl?: string;
@@ -55,5 +54,3 @@ export type QrPayload =
   | { app: 'ericpay'; type: 'one_time'; id: string }
   | { app: 'ericpay'; type: 'personal'; userId: string }
   | { app: 'ericpay'; type: 'reusable'; id: string };
-
-export class DomainError extends Error {}

@@ -1,14 +1,9 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { TextInput, View } from 'react-native';
-import { Button, Screen, Txt } from '../../src/components/ui';
+import { Button, parseEuros, Screen, Txt } from '../../src/components/ui';
 import { useProtectedUser, useStore } from '../../src/domain/store';
 import { colors, radius, spacing } from '../../src/theme/theme';
-
-function parseEuros(text: string): number {
-  const value = Number.parseFloat(text.replace(',', '.').trim());
-  return Number.isNaN(value) ? 0 : Math.round(value * 100);
-}
 
 // Pantalla 10: ingresar monto para un QR personal (SPEC-001 §5, RF-001 §10).
 export default function PayAmount() {

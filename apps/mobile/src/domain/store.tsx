@@ -15,7 +15,7 @@ import {
   onSnapshot,
   query,
   where,
-  doc,
+  QueryDocumentSnapshot,
 } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 
@@ -103,7 +103,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         usersMap[d.id] = {
           id: d.id,
           displayName: data.displayName || 'Usuario',
-          initial: (data.displayName || 'U').charAt(0).toUpperCase(),
           balanceInCents: data.balanceInCents ?? 0,
           currency: data.currency || 'EUR',
           photoUrl: data.photoUrl || '',
@@ -162,62 +161,42 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     };
   }, [uid]);
 
-  // 4. Escuchar transacciones del usuario actual (donde sea pagador o receptor)
-  // Escuchamos por separado las enviadas y las recibidas para evitar requerir índices compuestos en Firestore
+  // 4. Escuchar transacciones del usuario actual (donde sea pagador o receptor).
+  // Dos consultas separadas fusionadas en cliente para no requerir índices compuestos (D-010).
   useEffect(() => {
     if (!uid) return;
+
+    const txnFromDoc = (d: QueryDocumentSnapshot): Transaction => {
+      const data = d.data();
+      return {
+        id: d.id,
+        qrType: data.qrType,
+        qrReferenceId: data.qrReferenceId,
+        payerId: data.payerId,
+        recipientId: data.recipientId,
+        amountInCents: data.amountInCents,
+        currency: data.currency || 'EUR',
+        concept: data.concept,
+        status: data.status,
+        createdAt: data.createdAt,
+      };
+    };
 
     let sentTxns: Transaction[] = [];
     let rcvdTxns: Transaction[] = [];
 
     const updateTransactions = () => {
-      const merged = [...sentTxns, ...rcvdTxns];
-      // Eliminar duplicados si existieran
-      const unique = Array.from(new Map(merged.map((item) => [item.id, item])).values());
-      // Ordenar por fecha descendente
+      const unique = Array.from(new Map([...sentTxns, ...rcvdTxns].map((t) => [t.id, t])).values());
       unique.sort((a, b) => b.createdAt - a.createdAt);
       setState((s) => ({ ...s, transactions: unique }));
     };
 
-    const q1 = query(collection(db, 'transactions'), where('payerId', '==', uid));
-    const unsubSent = onSnapshot(q1, (snapshot) => {
-      sentTxns = [];
-      snapshot.forEach((d) => {
-        const data = d.data();
-        sentTxns.push({
-          id: d.id,
-          qrType: data.qrType,
-          qrReferenceId: data.qrReferenceId,
-          payerId: data.payerId,
-          recipientId: data.recipientId,
-          amountInCents: data.amountInCents,
-          currency: data.currency || 'EUR',
-          concept: data.concept,
-          status: data.status,
-          createdAt: data.createdAt,
-        });
-      });
+    const unsubSent = onSnapshot(query(collection(db, 'transactions'), where('payerId', '==', uid)), (snap) => {
+      sentTxns = snap.docs.map(txnFromDoc);
       updateTransactions();
     });
-
-    const q2 = query(collection(db, 'transactions'), where('recipientId', '==', uid));
-    const unsubRcvd = onSnapshot(q2, (snapshot) => {
-      rcvdTxns = [];
-      snapshot.forEach((d) => {
-        const data = d.data();
-        rcvdTxns.push({
-          id: d.id,
-          qrType: data.qrType,
-          qrReferenceId: data.qrReferenceId,
-          payerId: data.payerId,
-          recipientId: data.recipientId,
-          amountInCents: data.amountInCents,
-          currency: data.currency || 'EUR',
-          concept: data.concept,
-          status: data.status,
-          createdAt: data.createdAt,
-        });
-      });
+    const unsubRcvd = onSnapshot(query(collection(db, 'transactions'), where('recipientId', '==', uid)), (snap) => {
+      rcvdTxns = snap.docs.map(txnFromDoc);
       updateTransactions();
     });
 
@@ -276,70 +255,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     await signOut(auth);
   }
 
-  // Envolturas de funciones de backend (Cloud Functions v2)
-  async function createOneTimeRequest(args: { amountInCents: number; concept: string }): Promise<CreateResult> {
+  // Todas las Cloud Functions comparten el mismo contrato { ok, id? } y manejo de errores.
+  async function callFn(name: string, args: unknown, fallbackError: string): Promise<CreateResult> {
     try {
-      const func = httpsCallable(functions, 'createOneTimeRequest');
-      const res = await func(args);
-      const data = res.data as { ok: boolean; id: string };
-      return data.ok ? { ok: true, id: data.id } : { ok: false, error: 'Error del servidor' };
+      const res = await httpsCallable(functions, name)(args);
+      const data = res.data as { ok: boolean; id?: string };
+      return data.ok ? { ok: true, id: data.id ?? '' } : { ok: false, error: 'Error del servidor' };
     } catch (e: any) {
-      return { ok: false, error: e.message || 'Error al crear solicitud.' };
-    }
-  }
-
-  async function payOneTime(args: { requestId: string }): Promise<CreateResult> {
-    try {
-      const func = httpsCallable(functions, 'payOneTime');
-      const res = await func(args);
-      const data = res.data as { ok: boolean; id: string };
-      return data.ok ? { ok: true, id: data.id } : { ok: false, error: 'Error del servidor' };
-    } catch (e: any) {
-      return { ok: false, error: e.message || 'Error al pagar.' };
-    }
-  }
-
-  async function payPersonal(args: { recipientId: string; amountInCents: number; concept: string }): Promise<CreateResult> {
-    try {
-      const func = httpsCallable(functions, 'payPersonal');
-      const res = await func(args);
-      const data = res.data as { ok: boolean; id: string };
-      return data.ok ? { ok: true, id: data.id } : { ok: false, error: 'Error del servidor' };
-    } catch (e: any) {
-      return { ok: false, error: e.message || 'Error al realizar el pago personal.' };
-    }
-  }
-
-  async function createReusableQr(args: { name: string; amountInCents: number; description: string }): Promise<CreateResult> {
-    try {
-      const func = httpsCallable(functions, 'createReusableQr');
-      const res = await func(args);
-      const data = res.data as { ok: boolean; id: string };
-      return data.ok ? { ok: true, id: data.id } : { ok: false, error: 'Error del servidor' };
-    } catch (e: any) {
-      return { ok: false, error: e.message || 'Error al crear QR reutilizable.' };
-    }
-  }
-
-  async function payReusable(args: { qrId: string }): Promise<CreateResult> {
-    try {
-      const func = httpsCallable(functions, 'payReusable');
-      const res = await func(args);
-      const data = res.data as { ok: boolean; id: string };
-      return data.ok ? { ok: true, id: data.id } : { ok: false, error: 'Error del servidor' };
-    } catch (e: any) {
-      return { ok: false, error: e.message || 'Error al pagar QR reutilizable.' };
-    }
-  }
-
-  async function deactivateReusable(args: { qrId: string }): Promise<Result> {
-    try {
-      const func = httpsCallable(functions, 'deactivateReusable');
-      const res = await func(args);
-      const data = res.data as { ok: boolean };
-      return data.ok ? { ok: true } : { ok: false, error: 'Error del servidor' };
-    } catch (e: any) {
-      return { ok: false, error: e.message || 'Error al desactivar QR.' };
+      return { ok: false, error: e.message || fallbackError };
     }
   }
 
@@ -348,12 +271,12 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     loginWithGoogle,
     loginWithEmail,
     logout,
-    createOneTimeRequest,
-    payOneTime,
-    payPersonal,
-    createReusableQr,
-    payReusable,
-    deactivateReusable,
+    createOneTimeRequest: (args) => callFn('createOneTimeRequest', args, 'Error al crear solicitud.'),
+    payOneTime: (args) => callFn('payOneTime', args, 'Error al pagar.'),
+    payPersonal: (args) => callFn('payPersonal', args, 'Error al realizar el pago personal.'),
+    createReusableQr: (args) => callFn('createReusableQr', args, 'Error al crear QR reutilizable.'),
+    payReusable: (args) => callFn('payReusable', args, 'Error al pagar QR reutilizable.'),
+    deactivateReusable: (args) => callFn('deactivateReusable', args, 'Error al desactivar QR.'),
   };
 
   return <StoreContext.Provider value={store}>{children}</StoreContext.Provider>;

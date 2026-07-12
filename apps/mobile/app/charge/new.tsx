@@ -1,16 +1,9 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { TextInput, View } from 'react-native';
-import { Button, Screen, Txt } from '../../src/components/ui';
+import { Button, parseEuros, Screen, Txt } from '../../src/components/ui';
 import { useProtectedUser, useStore } from '../../src/domain/store';
 import { colors, radius, spacing } from '../../src/theme/theme';
-
-function parseEuros(text: string): number {
-  const normalized = text.replace(',', '.').trim();
-  const value = Number.parseFloat(normalized);
-  if (Number.isNaN(value)) return 0;
-  return Math.round(value * 100);
-}
 
 // Pantalla 4: crear cobro puntual (SPEC-001 §5, RF-001 §7).
 export default function NewCharge() {

@@ -15,10 +15,8 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, fonts, radius, shadow, spacing, typography } from '../theme/theme';
 import { User } from '../domain/types';
 
-export function Screen({ children, style, dark }: { children: ReactNode; style?: ViewStyle; dark?: boolean }) {
-  return (
-    <View style={[styles.screen, dark && styles.screenDark, style]}>{children}</View>
-  );
+export function Screen({ children, style }: { children: ReactNode; style?: ViewStyle }) {
+  return <View style={[styles.screen, style]}>{children}</View>;
 }
 
 export function Avatar({ user, size = 36, style }: { user?: User | null; size?: number; style?: ViewStyle }) {
@@ -244,14 +242,17 @@ export function formatEuros(amountInCents: number): string {
   });
 }
 
+// Entrada del usuario ("3,50") → céntimos enteros. Inversa de formatEuros.
+export function parseEuros(text: string): number {
+  const value = Number.parseFloat(text.replace(',', '.').trim());
+  return Number.isNaN(value) ? 0 : Math.round(value * 100);
+}
+
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: colors.gray50,
     padding: spacing.lg,
-  },
-  screenDark: {
-    backgroundColor: colors.navy900,
   },
   card: {
     backgroundColor: colors.white,

@@ -5,9 +5,8 @@ import { Txt } from '../src/components/ui';
 import { useStore } from '../src/domain/store';
 import { colors, spacing } from '../src/theme/theme';
 
-// Pantalla 1: carga inicial y recuperación de sesión. Como el store vive solo en memoria
-// (SPEC-001 §6), "recuperar sesión" es siempre negativo tras un reinicio real de la app —
-// esta pantalla solo evita un salto brusco a /login y deja el punto único de decisión.
+// Pantalla 1: carga inicial. Espera a que Firebase Auth resuelva la sesión persistida
+// (SPEC-002 §5.3) y redirige a /home o /login — único punto de decisión de arranque.
 export default function Index() {
   const { currentUserId, loading } = useStore();
   const router = useRouter();
