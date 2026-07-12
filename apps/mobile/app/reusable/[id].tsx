@@ -1,4 +1,5 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useState } from 'react';
 import QRCode from 'react-native-qrcode-svg';
 import { View } from 'react-native';
 import { Badge, Button, formatEuros, Txt } from '../../src/components/ui';
@@ -12,6 +13,7 @@ export default function ReusableQrScreen() {
   const user = useProtectedUser();
   const { reusableQrs, deactivateReusable } = useStore();
   const router = useRouter();
+  const [deactivating, setDeactivating] = useState(false);
   if (!user) return null;
 
   const qr = reusableQrs[qrId];
@@ -43,10 +45,14 @@ export default function ReusableQrScreen() {
 
       {isOwner && qr.status === 'active' && (
         <Button
-          title="Desactivar QR"
+          title={deactivating ? 'Desactivando...' : 'Desactivar QR'}
           variant="accent"
+          disabled={deactivating}
           onPress={async () => {
+            if (deactivating) return;
+            setDeactivating(true);
             const res = await deactivateReusable({ qrId: qr.id });
+            setDeactivating(false);
             if (!res.ok) {
               alert(res.error);
             }

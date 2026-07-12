@@ -27,14 +27,21 @@ export default function NewReusable() {
   const [amountText, setAmountText] = useState('');
   const [description, setDescription] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   if (!user) return null;
 
   const amountInCents = parseEuros(amountText);
 
   async function submit() {
+    if (loading) return;
+    setLoading(true);
     setError(null);
     const result = await createReusableQr({ name, amountInCents, description });
-    if (!result.ok) return setError(result.error);
+    if (!result.ok) {
+      setError(result.error);
+      setLoading(false);
+      return;
+    }
     router.replace({ pathname: '/reusable/[id]', params: { id: result.id } });
   }
 
@@ -65,7 +72,7 @@ export default function NewReusable() {
 
       {error && <Txt variant="caption" color={colors.red500}>{error}</Txt>}
 
-      <Button title="Crear QR" onPress={submit} disabled={amountInCents <= 0 || !name.trim()} />
+      <Button title={loading ? 'Creando...' : 'Crear QR'} onPress={submit} disabled={loading || amountInCents <= 0 || !name.trim()} />
     </Screen>
   );
 }

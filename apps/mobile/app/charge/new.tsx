@@ -20,14 +20,21 @@ export default function NewCharge() {
   const [amountText, setAmountText] = useState('');
   const [concept, setConcept] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   if (!user) return null;
 
   const amountInCents = parseEuros(amountText);
 
   async function submit() {
+    if (loading) return;
+    setLoading(true);
     setError(null);
     const result = await createOneTimeRequest({ amountInCents, concept });
-    if (!result.ok) return setError(result.error);
+    if (!result.ok) {
+      setError(result.error);
+      setLoading(false);
+      return;
+    }
     router.replace({ pathname: '/charge/[id]', params: { id: result.id } });
   }
 
@@ -73,7 +80,7 @@ export default function NewCharge() {
 
       {error && <Txt variant="caption" color={colors.red500}>{error}</Txt>}
 
-      <Button title="Generar QR" onPress={submit} disabled={amountInCents <= 0} />
+      <Button title={loading ? 'Generando...' : 'Generar QR'} onPress={submit} disabled={loading || amountInCents <= 0} />
     </Screen>
   );
 }
