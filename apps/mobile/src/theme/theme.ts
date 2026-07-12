@@ -32,12 +32,21 @@ export const radius = {
   pill: 999,
 } as const;
 
+// Hanken Grotesk (DESIGN.md). Con fuentes custom en RN el fontWeight no sintetiza
+// la variante: cada peso es una familia distinta. `Txt` mapea fontWeight → familia.
+export const fonts = {
+  regular: 'HankenGrotesk_400Regular',
+  semibold: 'HankenGrotesk_600SemiBold',
+  bold: 'HankenGrotesk_700Bold',
+  extrabold: 'HankenGrotesk_800ExtraBold',
+} as const;
+
 export const typography = {
-  display: { fontSize: 32, fontWeight: '700' as const },
-  title: { fontSize: 22, fontWeight: '700' as const },
-  subtitle: { fontSize: 17, fontWeight: '600' as const },
-  body: { fontSize: 15, fontWeight: '400' as const },
-  caption: { fontSize: 13, fontWeight: '400' as const },
+  display: { fontSize: 32, fontFamily: fonts.bold },
+  title: { fontSize: 22, fontFamily: fonts.bold },
+  subtitle: { fontSize: 17, fontFamily: fonts.semibold },
+  body: { fontSize: 15, fontFamily: fonts.regular },
+  caption: { fontSize: 13, fontFamily: fonts.regular },
 };
 
 export const shadow = {

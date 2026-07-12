@@ -9,7 +9,10 @@ import {
   ViewStyle,
   Image,
 } from 'react-native';
-import { colors, radius, shadow, spacing, typography } from '../theme/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { colors, fonts, radius, shadow, spacing, typography } from '../theme/theme';
 import { User } from '../domain/types';
 
 export function Screen({ children, style, dark }: { children: ReactNode; style?: ViewStyle; dark?: boolean }) {
@@ -76,7 +79,7 @@ export function Avatar({ user, size = 36, style }: { user?: User | null; size?: 
           {
             color: colors.white,
             fontSize: size * 0.42,
-            fontWeight: '700',
+            fontFamily: fonts.bold,
             textAlign: 'center',
           },
         ]}
@@ -86,6 +89,18 @@ export function Avatar({ user, size = 36, style }: { user?: User | null; size?: 
     </View>
   );
 }
+
+// Los pesos vienen de estilos legados como fontWeight; con Hanken Grotesk cada peso
+// es una familia distinta, así que se traduce aquí y se elimina el fontWeight.
+const weightToFont: Record<string, string> = {
+  normal: fonts.regular,
+  '400': fonts.regular,
+  '500': fonts.semibold,
+  '600': fonts.semibold,
+  bold: fonts.bold,
+  '700': fonts.bold,
+  '800': fonts.extrabold,
+};
 
 export function Txt({
   variant = 'body',
@@ -98,7 +113,62 @@ export function Txt({
   style?: TextStyle;
   children: ReactNode;
 }) {
-  return <Text style={[typography[variant], { color }, style]}>{children}</Text>;
+  const flat = StyleSheet.flatten([typography[variant], { color }, style]) as TextStyle;
+  if (flat.fontWeight) {
+    flat.fontFamily = weightToFont[String(flat.fontWeight)] ?? fonts.regular;
+    delete flat.fontWeight;
+  }
+  return <Text style={flat}>{children}</Text>;
+}
+
+// Header de marca compartido por las pantallas principales (DESIGN.md): degradado
+// navy, avatar con borde cian, wordmark y campana (decorativa en esta fase).
+export function BrandHeader({
+  user,
+  greeting,
+  onLogout,
+}: {
+  user: User;
+  greeting?: string;
+  onLogout?: () => void;
+}) {
+  const insets = useSafeAreaInsets();
+  return (
+    <LinearGradient
+      colors={[colors.navy900, colors.navy700]}
+      start={{ x: 0, y: 0 }}
+      end={{ x: 1, y: 0 }}
+      style={{
+        paddingTop: insets.top + spacing.sm,
+        paddingBottom: spacing.md,
+        paddingHorizontal: spacing.lg,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+    >
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
+        <Avatar user={user} size={40} style={{ borderWidth: 2, borderColor: colors.cyan400 }} />
+        <View>
+          {greeting ? (
+            <Txt variant="caption" color={colors.cyan400} style={{ opacity: 0.8 }}>{greeting}</Txt>
+          ) : null}
+          <Txt variant="subtitle" color={colors.white} style={{ fontSize: 20, fontFamily: fonts.bold }}>EricPay</Txt>
+        </View>
+      </View>
+      <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+        {/* ponytail: campana decorativa — sin feature de notificaciones en esta fase */}
+        <View style={styles.headerIconBtn}>
+          <MaterialIcons name="notifications-none" size={22} color={colors.white} />
+        </View>
+        {onLogout && (
+          <Pressable onPress={onLogout} style={({ pressed }) => [styles.headerIconBtn, pressed && { opacity: 0.7 }]}>
+            <MaterialIcons name="logout" size={20} color={colors.white} />
+          </Pressable>
+        )}
+      </View>
+    </LinearGradient>
+  );
 }
 
 export function Card({ children, style }: { children: ReactNode; style?: ViewStyle }) {
@@ -162,7 +232,7 @@ export function Badge({ status, label }: { status: BadgeStatus; label?: string }
   const s = badgeStyles[status];
   return (
     <View style={[styles.badge, { backgroundColor: s.bg }]}>
-      <Text style={[typography.caption, { color: s.fg, fontWeight: '600' }]}>{label ?? s.label}</Text>
+      <Text style={[typography.caption, { color: s.fg, fontFamily: fonts.semibold }]}>{label ?? s.label}</Text>
     </View>
   );
 }
@@ -206,5 +276,13 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xs,
     borderRadius: radius.pill,
     alignSelf: 'flex-start',
+  },
+  headerIconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.1)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
