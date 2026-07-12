@@ -127,3 +127,11 @@ Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear 
 **Contexto:** Bug reportado por el usuario: en móvil, "Continuar con Google" exigía escribir el email y fallaba con "Contraseña incorrecta" en cuentas ya registradas. La causa es que en móvil ese botón nunca fue Google: era la simulación de D-009 (email del formulario + contraseña fija interna `password123`). Si la cuenta se creó con una contraseña propia, la contraseña fija jamás coincide — el fallo es inherente al truco, no un defecto de implementación. Google nativo real sigue sin ser viable en Expo Go (requiere development build + OAuth nativo).
 **Decisión:** Eliminar la simulación: `loginWithGoogle` es solo el popup real de Web y el botón se renderiza únicamente cuando `Platform.OS === 'web'`. En móvil el único camino es email y contraseña (con auto-registro, D-011).
 **Consecuencias:** En móvil desaparece la confusión y el error; en Web nada cambia salvo que Google ya no pide el campo de email. Las cuentas creadas por el viejo truco siguen siendo válidas: entran con su email y `password123`... o con Google en Web si el email coincide.
+
+## I-004 — Panel de control (Dashboard) web administrativo
+
+**Fecha:** 2026-07-12
+**Qué quedó funcionando:** Implementación de un panel de control oculto accesible en la ruta `/dashboard` (únicamente activo en la plataforma Web). El dashboard muestra estadísticas acumuladas (volumen transaccionado, saldo total del sistema, recuento de usuarios y transacciones) y un diseño responsivo de dos columnas con listados interactivos de usuarios y transacciones, ambos con filtros de búsqueda en tiempo real.
+- **Backend:** Se creó la Cloud Function `adminGetDashboardData` en Node.js, la cual consulta Firestore de forma privilegiada para retornar toda la información necesaria sin violar las reglas de seguridad de transacciones de usuarios regulares.
+- **TypeScript:** Se habilitó `"skipLibCheck": true` en `apps/backend/functions/tsconfig.json` para resolver conflictos de tipos con `@types/node` en el monorepo.
+
