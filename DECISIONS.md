@@ -135,3 +135,10 @@ Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear 
 - **Backend:** Se creó la Cloud Function `adminGetDashboardData` en Node.js, la cual consulta Firestore de forma privilegiada para retornar toda la información necesaria sin violar las reglas de seguridad de transacciones de usuarios regulares.
 - **TypeScript:** Se habilitó `"skipLibCheck": true` en `apps/backend/functions/tsconfig.json` para resolver conflictos de tipos con `@types/node` en el monorepo.
 
+
+## D-015 — `.easignore` para que el build de nube reciba el `.env`
+
+**Fecha:** 2026-07-11
+**Contexto:** El APK generado con EAS Build crasheaba al abrir. Causa: `.env` está en `.gitignore` y EAS no sube archivos ignorados por git, así que las `EXPO_PUBLIC_FIREBASE_*` llegaban `undefined` al bundle y `initializeApp` lanzaba excepción al importar `firebase.ts`. Alternativas: variables de entorno en el dashboard de EAS (`eas env:create`) o hardcodear la config en `eas.json`.
+**Decisión:** Añadir `.easignore` en la raíz (copia de `.gitignore` sin la línea `.env`), de modo que el `.env` viaje con el build de nube. La config web de Firebase no es secreta — son identificadores públicos, protegen las reglas de Firestore, no la API key. Es la opción sin dependencia del dashboard ni de estado remoto.
+**Consecuencias:** Los próximos `eas build` inyectan las variables correctamente. Si algún día hay secretos de verdad en `.env`, esos sí deben ir como variables de EAS, no por esta vía. Nota operativa aparte: instalar un build local (keystore debug) sobre uno de nube (keystore EAS) requiere desinstalar antes (`adb uninstall com.andresstbn.ericpay`) — las firmas no coinciden.

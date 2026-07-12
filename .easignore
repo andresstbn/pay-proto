@@ -1,0 +1,48 @@
+# Igual que .gitignore, pero SIN excluir .env: EAS necesita subirlo para que
+# las EXPO_PUBLIC_FIREBASE_* se inyecten en el bundle del build de nube.
+# (La config web de Firebase no es secreta — son identificadores públicos.)
+
+# dependencies
+node_modules/
+
+# Expo
+.expo/
+dist/
+web-build/
+expo-env.d.ts
+
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# local env files (los .local sí se excluyen; .env base NO)
+.env*.local
+
+**/functions/lib/
+**/functions/node_modules/
+**/coverage/
+
+# typescript
+*.tsbuildinfo
+
+# generated native folders
+**/ios/
+**/android/
+.claude/settings.local.json
