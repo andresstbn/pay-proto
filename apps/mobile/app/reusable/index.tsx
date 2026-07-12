@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Pressable, ScrollView, View } from 'react-native';
-import { Badge, Button, Card, formatEuros, Screen, Txt } from '../../src/components/ui';
+import { Badge, Button, Card, formatEuros, Screen, ScreenHeader, Txt } from '../../src/components/ui';
 import { useProtectedUser, useStore } from '../../src/domain/store';
 import { colors, spacing } from '../../src/theme/theme';
 
@@ -17,10 +17,12 @@ export default function ReusableList() {
 
   return (
     <Screen style={{ gap: spacing.lg }}>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Txt variant="title">QRs reutilizables</Txt>
-        <Button title="Crear" onPress={() => router.push('/reusable/new')} style={{ paddingHorizontal: spacing.lg }} />
-      </View>
+      <ScreenHeader
+        title="QRs reutilizables"
+        rightAccessory={
+          <Button title="Crear" onPress={() => router.push('/reusable/new')} style={{ paddingHorizontal: spacing.lg }} />
+        }
+      />
 
       {own.length === 0 && <Txt variant="caption" color={colors.gray500}>Todavía no has creado ninguno.</Txt>}
 

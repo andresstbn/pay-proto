@@ -1,17 +1,19 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Screen, Txt } from '../src/components/ui';
 import { useNotificationPreferences } from '../src/notifications/notification-preferences';
 import { colors, radius, spacing } from '../src/theme/theme';
 
 export default function NotificationSettingsScreen() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const { preferences, updatePreference } = useNotificationPreferences();
 
   return (
     <Screen style={styles.screen}>
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + spacing.sm }]}>
         <Pressable onPress={() => router.back()} style={styles.back} accessibilityLabel="Volver">
           <MaterialIcons name="arrow-back" size={24} color={colors.white} />
         </Pressable>
@@ -82,7 +84,6 @@ function PreferenceRow({ icon, title, description, value, onValueChange, last = 
 const styles = StyleSheet.create({
   screen: { padding: 0, backgroundColor: colors.gray50 },
   header: {
-    paddingTop: 64,
     paddingBottom: spacing.xl,
     paddingHorizontal: spacing.lg,
     flexDirection: 'row',

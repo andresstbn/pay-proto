@@ -17,8 +17,42 @@ import { colors, fonts, radius, shadow, spacing, typography } from '../theme/the
 import { User } from '../domain/types';
 
 export function Screen({ children, style }: { children: ReactNode; style?: ViewStyle }) {
-  return <View style={[styles.screen, style]}>{children}</View>;
+  const insets = useSafeAreaInsets();
+  const flatStyle = StyleSheet.flatten(style) || {};
+
+  const hasCustomPaddingTop = flatStyle.paddingTop !== undefined || flatStyle.padding !== undefined;
+  const hasCustomPaddingBottom = flatStyle.paddingBottom !== undefined || flatStyle.padding !== undefined;
+
+  const resolvedStyle = {
+    paddingTop: hasCustomPaddingTop ? flatStyle.paddingTop : Math.max(insets.top + spacing.md, spacing.lg),
+    paddingBottom: hasCustomPaddingBottom ? flatStyle.paddingBottom : Math.max(insets.bottom, spacing.lg),
+  };
+
+  return <View style={[styles.screen, resolvedStyle, style]}>{children}</View>;
 }
+
+export function ScreenHeader({ title, onBack, rightAccessory }: { title: string; onBack?: () => void; rightAccessory?: ReactNode }) {
+  const router = useRouter();
+
+  const handleBack = onBack || (() => {
+    if (router.canGoBack()) {
+      router.back();
+    } else {
+      router.replace('/home');
+    }
+  });
+
+  return (
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.sm }}>
+      <Pressable onPress={handleBack} hitSlop={12} accessibilityLabel="Volver">
+        <MaterialIcons name="arrow-back" size={24} color={colors.navy900} />
+      </Pressable>
+      <Txt variant="title" style={{ flex: 1 }}>{title}</Txt>
+      {rightAccessory}
+    </View>
+  );
+}
+
 
 export function Avatar({ user, size = 36, style }: { user?: User | null; size?: number; style?: ViewStyle }) {
   if (!user) {

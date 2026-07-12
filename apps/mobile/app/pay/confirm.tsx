@@ -1,7 +1,7 @@
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
-import { Avatar, Button, Card, formatEuros, Screen, Txt } from '../../src/components/ui';
+import { Avatar, Button, Card, formatEuros, Screen, ScreenHeader, Txt } from '../../src/components/ui';
 import { liveStatus, useProtectedUser, useStore } from '../../src/domain/store';
 import { colors, spacing } from '../../src/theme/theme';
 
@@ -92,7 +92,7 @@ export default function Confirm() {
 
   return (
     <Screen style={{ gap: spacing.xl }}>
-      <Txt variant="title">Confirmar pago</Txt>
+      <ScreenHeader title="Confirmar pago" />
 
       {blockedReason ? (
         <Card>

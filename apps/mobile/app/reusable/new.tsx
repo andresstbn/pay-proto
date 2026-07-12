@@ -1,7 +1,7 @@
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { TextInput, View } from 'react-native';
-import { Button, parseEuros, Screen, Txt } from '../../src/components/ui';
+import { Button, parseEuros, Screen, ScreenHeader, Txt } from '../../src/components/ui';
 import { useProtectedUser, useStore } from '../../src/domain/store';
 import { colors, radius, spacing } from '../../src/theme/theme';
 
@@ -42,7 +42,7 @@ export default function NewReusable() {
 
   return (
     <Screen style={{ gap: spacing.xl }}>
-      <Txt variant="title">Nuevo QR reutilizable</Txt>
+      <ScreenHeader title="Nuevo QR reutilizable" />
 
       <View style={{ gap: spacing.xs }}>
         <Txt variant="caption" color={colors.gray500}>Nombre</Txt>
