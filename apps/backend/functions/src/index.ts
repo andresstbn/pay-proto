@@ -414,3 +414,59 @@ export const deactivateReusable = onCall(async (request) => {
 
   return { ok: true };
 });
+
+// 8. Cloud Function: Obtener todos los usuarios y transacciones para el dashboard
+export const adminGetDashboardData = onCall(async (request) => {
+  const auth = request.auth;
+  if (!auth) {
+    throw new HttpsError('unauthenticated', 'El usuario debe estar autenticado.');
+  }
+
+  try {
+    // 1. Obtener todos los usuarios
+    const usersSnapshot = await db.collection('users').get();
+    const usersList: any[] = [];
+    usersSnapshot.forEach((doc) => {
+      const data = doc.data();
+      usersList.push({
+        id: doc.id,
+        displayName: data.displayName || 'Usuario',
+        email: data.email || '',
+        photoUrl: data.photoUrl || '',
+        balanceInCents: data.balanceInCents ?? 0,
+        currency: data.currency || 'EUR',
+      });
+    });
+
+    // 2. Obtener todas las transacciones
+    const transactionsSnapshot = await db.collection('transactions')
+      .orderBy('createdAt', 'desc')
+      .get();
+    
+    const transactionsList: any[] = [];
+    transactionsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      transactionsList.push({
+        id: doc.id,
+        qrType: data.qrType || 'unknown',
+        qrReferenceId: data.qrReferenceId || '',
+        payerId: data.payerId || '',
+        recipientId: data.recipientId || '',
+        amountInCents: data.amountInCents ?? 0,
+        currency: data.currency || 'EUR',
+        concept: data.concept || '',
+        status: data.status || 'completed',
+        createdAt: data.createdAt || 0,
+      });
+    });
+
+    return {
+      ok: true,
+      users: usersList,
+      transactions: transactionsList,
+    };
+  } catch (err: any) {
+    throw new HttpsError('internal', err.message || 'Error al obtener datos del dashboard.');
+  }
+});
+
