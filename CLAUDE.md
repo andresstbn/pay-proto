@@ -23,9 +23,17 @@ anticipar escala ni casos de uso que nadie pidió todavía.
 - Montos siempre en céntimos enteros, moneda fija. Nunca floats para dinero.
 - Sé económico con tokens y tiempo: respuestas cortas, sin resúmenes largos de lo que ya es obvio en el diff. Si el código lo explica, no lo repitas en prosa.
 
-## Commits
+## Git, ramas y commits
 
-Sin restricciones: haz commit cuando termines un incremento con sentido (una pantalla, un flujo, una decisión aplicada). No pidas permiso para commitear. Mensajes cortos, en español, describiendo el qué. Cambios de naturaleza distinta (docs, UI, refactor) van en commits separados, no mezclados.
+- Antes de preparar cambios que vayan a publicarse, crea una rama descriptiva
+  desde la rama base actualizada (`feat/*`, `fix/*`, `docs/*` o `chore/*`).
+- Nunca hagas commit, push o tag sin autorización explícita del usuario.
+- Nunca subas directamente a `main`. Solo se permite como excepción si el
+  usuario pide de forma explícita ese destino en el mismo encargo.
+- Usa mensajes cortos que describan el qué. Cambios de naturaleza distinta
+  (docs, UI, refactor) van en commits separados, no mezclados.
+- Antes de subir, ejecuta las validaciones del alcance y confirma que el remoto
+  recibirá únicamente la rama de trabajo, sin `--force`.
 
 ## Documentación obligatoria
 

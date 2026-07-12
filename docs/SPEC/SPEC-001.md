@@ -1,4 +1,4 @@
-# SPEC-000 — Demo ultrarrápida de EricPay (Fase 0, previa al RF-001)
+# SPEC-001 — Demo ultrarrápida de EricPay (Fase 0, previa al RF-001)
 
 ## 1. Propósito de este documento
 

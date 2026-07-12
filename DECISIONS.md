@@ -168,3 +168,23 @@ Verificado manualmente en `expo start --web`: Escenario 1 (cobro puntual: crear 
 **Contexto:** La ruta oculta `/dashboard` y la autenticación básica no impiden que una cuenta normal invoque directamente `adminGetDashboardData`, que devuelve información global y elude deliberadamente las reglas de lectura por usuario.
 **Decisión:** El callable comprueba en backend el custom claim booleano `admin: true` antes de consultar datos. Cualquier otro valor o ausencia del claim devuelve `permission-denied`.
 **Consecuencias:** Un administrador debe recibir el claim mediante un entorno privilegiado con Firebase Admin SDK y renovar su ID token antes de abrir el panel. Las cuentas normales ya no pueden usar el endpoint aunque conozcan su nombre o la ruta.
+
+## I-006 — Backend de grupos desplegado
+
+**Fecha:** 2026-07-12
+**Qué quedó funcionando:** El backend de `SPEC-004` quedó publicado con las funciones de creación, invitación, membresía, roles, participación, archivado, QRs grupales, previsualización y pago con reparto. El release creó 14 Functions nuevas y actualizó `onUserCreated` y `adminGetDashboardData`, sin eliminar las seis funciones de pago existentes. Las 22 Functions quedaron `ACTIVE` con Node.js 22; las reglas de Firestore fueron publicadas y los cinco índices compuestos quedaron `READY`.
+**Verificación:** 21/21 tests de Functions con 100 % de líneas y 95,52 % de ramas; 5/5 tests de Security Rules; prueba negativa de `createGroup` sin sesión con respuesta `UNAUTHENTICATED` y ninguna escritura.
+
+## I-007 — Exportación y compartición de QRs como PNG
+
+**Fecha:** 2026-07-12
+**Qué quedó funcionando:** El QR personal se captura como PNG y puede compartirse como archivo o guardarse en Fotos; en Web se descarga cuando el navegador no admite compartir archivos. El QR abierto de grupo usa el mismo pipeline y ya no comparte el payload JSON como texto. Las acciones bloquean dobles pulsaciones, muestran estado mientras preparan la imagen y liberan los archivos temporales al terminar.
+**Verificación:** helper nativo/Web con 9/9 tests, suite móvil completa con 61/61 tests y 99,33 % de líneas, TypeScript sin errores y bundle cargado en un iPhone físico mediante Expo Go. Queda pendiente registrar una comprobación manual completa de la hoja nativa de compartir y del guardado en galería.
+**Fuera de este incremento:** los QRs fijos de grupo se muestran y pueden pagarse, pero todavía no tienen una acción individual para compartir su imagen.
+
+## D-019 — OAuth móvil exige aprovisionamiento y una prueba E2E para considerarse cerrado
+
+**Fecha:** 2026-07-12
+**Contexto:** `I-005` cerró la implementación de los adaptadores para Google, Facebook y Apple, pero escribir el flujo no lo vuelve operativo. Expo Go no soporta el callback OAuth con el esquema propio; el proyecto Firebase solo tiene registrada la app Web, faltan los client IDs nativos en el entorno y la cuenta operadora actual no puede leer el proyecto EAS enlazado.
+**Decisión:** Separar explícitamente los estados **implementado** y **operativo**. El criterio de aceptación 1 de `SPEC-004` permanece abierto en móvil y solo se declarará cerrado cuando estén registradas las apps nativas y sus clientes, los identificadores públicos estén configurados, exista acceso al proyecto EAS, se genere el development build y una cuenta real complete el flujo de extremo a extremo sin cambiar de UID.
+**Consecuencias:** `SPEC-004` permanece parcialmente operativo. Email/contraseña sigue siendo el acceso soportado en Expo Go; Google Web continúa configurado. Cuando Android e iOS superen la verificación real se añadirá un nuevo incremento `I-xxx`, sin reescribir `I-005`.
