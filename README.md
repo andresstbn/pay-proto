@@ -86,7 +86,19 @@ pnpm install
 
 ---
 
-## 📦 Generar un APK de Android para Pruebas
+## 📦 Compilar la App de Android
+
+### Compilación local (desarrollo, dispositivo conectado por USB)
+
+Compila el APK de debug en tu máquina, lo instala en el dispositivo y arranca Metro:
+
+```bash
+pnpm --filter mobile run android
+```
+
+Requiere Android SDK instalado y el dispositivo con depuración USB activada. El APK queda en `apps/mobile/android/app/build/outputs/apk/debug/app-debug.apk`, pero necesita Metro corriendo para funcionar — no sirve como APK independiente.
+
+### Compilación en la nube (EAS Build, APK independiente)
 
 El proyecto ya está pre-configurado para compilarse en la nube mediante **EAS Build** soportando la estructura de monorepo con `pnpm`.
 
@@ -99,6 +111,10 @@ El proyecto ya está pre-configurado para compilarse en la nube mediante **EAS B
    npx eas-cli build --platform android --profile preview
    ```
 3. Acepta generar un nuevo Keystore si te lo pregunta. Al finalizar (5-10 minutos), escanea el código QR resultante con tu Android para descargar e instalar el archivo `.apk`.
+
+> **Notas:**
+> * El `.env` de `apps/mobile/` se sube al build de nube vía `.easignore` (ver D-015 en DECISIONS.md). Sin él, el APK crashea al abrir.
+> * El build local (keystore de debug) y el de nube (keystore de EAS) tienen firmas distintas: para pasar de uno a otro en el mismo dispositivo hay que desinstalar antes (`adb uninstall com.andresstbn.ericpay`).
 
 ---
 
