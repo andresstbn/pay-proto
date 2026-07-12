@@ -377,14 +377,14 @@ export function useCurrentUser(): User | null {
 
 export function useProtectedUser(): User | null {
   const user = useCurrentUser();
-  const { loading } = useStore();
+  const { loading, currentUserId } = useStore();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!loading && currentUserId === null) {
       router.replace('/login');
     }
-  }, [user, loading]);
+  }, [currentUserId, loading]);
 
   return user;
 }

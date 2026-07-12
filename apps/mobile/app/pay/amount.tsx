@@ -18,6 +18,7 @@ export default function PayAmount() {
   const router = useRouter();
   const [amountText, setAmountText] = useState('');
   const [concept, setConcept] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
   if (!user) return null;
 
   const recipient = users[recipientId];
@@ -75,13 +76,15 @@ export default function PayAmount() {
 
       <Button
         title="Continuar"
-        disabled={amountInCents <= 0}
-        onPress={() =>
+        disabled={amountInCents <= 0 || isSubmitting}
+        onPress={() => {
+          setIsSubmitting(true);
           router.push({
             pathname: '/pay/confirm',
             params: { kind: 'personal', recipientId, amount: String(amountInCents), concept },
-          })
-        }
+          });
+          setTimeout(() => setIsSubmitting(false), 1000);
+        }}
       />
     </Screen>
   );

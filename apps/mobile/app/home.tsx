@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { Pressable, ScrollView, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar, Card, formatEuros, Screen, Txt } from '../src/components/ui';
 import { useProtectedUser, useStore } from '../src/domain/store';
@@ -16,7 +16,14 @@ export default function Home() {
   const user = useProtectedUser();
   const { transactions, logout, users } = useStore();
   const router = useRouter();
-  if (!user) return null;
+
+  if (!user) {
+    return (
+      <Screen style={{ alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator color={colors.cyan400} size="large" />
+      </Screen>
+    );
+  }
 
   const recent = transactions.filter((t) => t.payerId === user.id || t.recipientId === user.id).slice(0, 3);
 

@@ -1,6 +1,6 @@
 import { CameraView, useCameraPermissions } from 'expo-camera';
-import { useRouter } from 'expo-router';
-import { useRef, useState } from 'react';
+import { useNavigation, useRouter } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Avatar, Button, Card, formatEuros, Screen, Txt } from '../src/components/ui';
@@ -12,13 +12,24 @@ export default function Scan() {
   const user = useProtectedUser();
   const { users, oneTimeRequests, reusableQrs } = useStore();
   const router = useRouter();
+  const navigation = useNavigation();
   const [permission, requestPermission] = useCameraPermissions();
   const locked = useRef(false);
   const [cameraError, setCameraError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      locked.current = false;
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   if (!user) return null;
 
   function route(payload: QrPayload) {
+    if (locked.current) return;
     if (payload.app !== 'ericpay') return;
+    locked.current = true;
     if (payload.type === 'one_time') {
       router.push({ pathname: '/pay/confirm', params: { kind: 'one_time', requestId: payload.id } });
     } else if (payload.type === 'personal') {
@@ -29,11 +40,8 @@ export default function Scan() {
   }
 
   function onBarcodeScanned({ data }: { data: string }) {
-    if (locked.current) return;
     try {
       const payload = JSON.parse(data) as QrPayload;
-      if (payload.app !== 'ericpay') return;
-      locked.current = true;
       route(payload);
     } catch {
       // Ignorar QRs ajenos

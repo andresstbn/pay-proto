@@ -23,6 +23,7 @@ export default function Confirm() {
   const { users, oneTimeRequests, reusableQrs, payOneTime, payPersonal, payReusable } = useStore();
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   if (!user) return null;
 
   let recipientId: string | undefined;
@@ -62,18 +63,29 @@ export default function Confirm() {
   if (!blockedReason && recipientId === user.id) blockedReason = 'No puedes pagarte a ti mismo.';
 
   async function confirm() {
+    if (loading) return;
+    setLoading(true);
     setError(null);
-    let result;
-    if (params.kind === 'one_time') {
-      result = await payOneTime({ requestId: params.requestId! });
-    } else if (params.kind === 'personal') {
-      result = await payPersonal({ recipientId: recipientId!, amountInCents, concept });
-    } else {
-      result = await payReusable({ qrId: params.qrId! });
-    }
+    try {
+      let result;
+      if (params.kind === 'one_time') {
+        result = await payOneTime({ requestId: params.requestId! });
+      } else if (params.kind === 'personal') {
+        result = await payPersonal({ recipientId: recipientId!, amountInCents, concept });
+      } else {
+        result = await payReusable({ qrId: params.qrId! });
+      }
 
-    if (!result.ok) return setError(result.error);
-    router.replace({ pathname: '/pay/result', params: { transactionId: result.id } });
+      if (!result.ok) {
+        setError(result.error);
+        setLoading(false);
+        return;
+      }
+      router.replace({ pathname: '/pay/result', params: { transactionId: result.id } });
+    } catch (e: any) {
+      setError(e.message || 'Error al procesar el pago.');
+      setLoading(false);
+    }
   }
 
   const balanceAfter = user.balanceInCents - amountInCents;
@@ -117,11 +129,11 @@ export default function Confirm() {
 
           {error && <Txt color={colors.red500}>{error}</Txt>}
 
-          <Button title="Confirmar" onPress={confirm} disabled={balanceAfter < 0} />
+          <Button title={loading ? 'Procesando...' : 'Confirmar'} onPress={confirm} disabled={loading || balanceAfter < 0} />
         </>
       )}
 
-      <Button title="Cancelar" variant="outline" onPress={() => router.replace('/home')} />
+      <Button title="Cancelar" variant="outline" onPress={() => router.replace('/home')} disabled={loading} />
     </Screen>
   );
 }
