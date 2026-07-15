@@ -49,7 +49,8 @@ export interface Transaction {
   createdAt: number;
 }
 
-// Payload codificado en el QR físico. `app` valida que el QR pertenezca a EricPay (RF-001 §10).
+// Payload codificado en el QR físico. `app` valida que el QR pertenezca a Propi (RF-001 §10).
+// El literal sigue siendo 'ericpay': es formato de cable, cambiarlo invalidaría QRs ya emitidos.
 export type QrPayload =
   | { app: 'ericpay'; type: 'one_time'; id: string }
   | { app: 'ericpay'; type: 'personal'; userId: string }

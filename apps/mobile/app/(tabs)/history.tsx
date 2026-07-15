@@ -132,8 +132,8 @@ export default function History() {
                     paddingVertical: spacing.sm,
                     borderRadius: radius.pill,
                     borderWidth: 1,
-                    backgroundColor: active ? colors.blue600 : colors.white,
-                    borderColor: active ? colors.blue600 : colors.gray200,
+                    backgroundColor: active ? colors.brown700 : colors.white,
+                    borderColor: active ? colors.brown700 : colors.gray200,
                   },
                   pressed && { opacity: 0.85 },
                 ]}
@@ -182,11 +182,11 @@ export default function History() {
                       <MaterialIcons
                       name={entry.isGroup ? 'groups' : entry.isSent ? 'north-east' : 'account-balance-wallet'}
                         size={22}
-                      color={entry.isSent ? colors.navy900 : colors.green500}
+                      color={entry.isSent ? colors.brown700 : colors.green500}
                       />
                     </View>
                     <View style={{ flex: 1 }}>
-                      <Txt variant="body" color={colors.navy900} style={{ fontFamily: fonts.semibold }}>
+                      <Txt variant="body" color={colors.brown700} style={{ fontFamily: fonts.semibold }}>
                         {entry.title}
                       </Txt>
                       <Txt variant="caption" color={colors.gray500}>
@@ -197,7 +197,7 @@ export default function History() {
                       </Txt>
                     </View>
                   </View>
-                  <Txt variant="subtitle" color={entry.isSent ? colors.navy900 : colors.green500} style={{ fontSize: 16 }}>
+                  <Txt variant="subtitle" color={entry.isSent ? colors.brown700 : colors.green500} style={{ fontSize: 16 }}>
                     {entry.isSent ? '-' : '+'}{formatEuros(entry.amountInCents)}
                   </Txt>
                 </Card>

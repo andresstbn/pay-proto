@@ -34,7 +34,7 @@ export default function JoinGroupScreen() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, padding: spacing.lg, gap: spacing.xl }}>
         <ScreenHeader title="Entrar a un grupo" />
         <View style={{ gap: spacing.xs }}>
-          <Txt variant="display" color={colors.navy900} style={{ fontSize: 28 }}>Usa tu invitación</Txt>
+          <Txt variant="display" color={colors.brown700} style={{ fontSize: 28 }}>Usa tu invitación</Txt>
           <Txt variant="body" color={colors.gray500}>Escribe el código que te ha compartido un administrador.</Txt>
         </View>
         <Card style={{ gap: spacing.sm }}>
@@ -57,7 +57,7 @@ export default function JoinGroupScreen() {
               borderRadius: radius.card,
               borderWidth: 1,
               borderColor: error ? colors.red500 : colors.gray200,
-              color: colors.navy900,
+              color: colors.brown700,
               backgroundColor: colors.gray50,
               textAlign: 'center',
               letterSpacing: 3,

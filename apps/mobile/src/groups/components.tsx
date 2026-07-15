@@ -22,9 +22,9 @@ export function GroupMark({ name, size = 48 }: { name: string; size?: number }) 
         borderRadius: size / 3,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: colors.navy900,
+        backgroundColor: colors.brown700,
         borderWidth: 2,
-        borderColor: colors.cyan400,
+        borderColor: colors.orange400,
       }}
     >
       <Txt color={colors.white} style={{ fontFamily: fonts.bold, fontSize: size * 0.4 }}>{initial}</Txt>
@@ -41,10 +41,10 @@ export function RoleBadge({ role }: { role: GroupRole }) {
         paddingHorizontal: spacing.sm,
         paddingVertical: spacing.xs,
         borderRadius: radius.pill,
-        backgroundColor: highlighted ? colors.yellow100 : colors.gray100,
+        backgroundColor: highlighted ? colors.peach100 : colors.gray100,
       }}
     >
-      <Txt variant="caption" color={highlighted ? colors.navy900 : colors.gray500} style={{ fontFamily: fonts.semibold }}>
+      <Txt variant="caption" color={highlighted ? colors.brown700 : colors.gray500} style={{ fontFamily: fonts.semibold }}>
         {ROLE_LABEL[role]}
       </Txt>
     </View>
@@ -69,10 +69,10 @@ export function GroupState({
   return (
     <Card style={{ alignItems: 'center', gap: spacing.md, padding: spacing.xxl }}>
       {loading
-        ? <ActivityIndicator size="large" color={colors.blue600} />
-        : <MaterialIcons name={icon} size={44} color={colors.blue600} />}
+        ? <ActivityIndicator size="large" color={colors.brown700} />
+        : <MaterialIcons name={icon} size={44} color={colors.brown700} />}
       <View style={{ alignItems: 'center', gap: spacing.xs }}>
-        <Txt variant="subtitle" color={colors.navy900}>{title}</Txt>
+        <Txt variant="subtitle" color={colors.brown700}>{title}</Txt>
         <Txt variant="body" color={colors.gray500} style={{ textAlign: 'center', lineHeight: 21 }}>{description}</Txt>
       </View>
       {actionTitle && onAction ? <Button title={actionTitle} onPress={onAction} style={{ alignSelf: 'stretch' }} /> : null}
@@ -84,7 +84,7 @@ export function GroupSection({ title, action, children }: { title: string; actio
   return (
     <View style={{ gap: spacing.md }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: spacing.md }}>
-        <Txt variant="title" color={colors.navy900} style={{ fontSize: 19 }}>{title}</Txt>
+        <Txt variant="title" color={colors.brown700} style={{ fontSize: 19 }}>{title}</Txt>
         {action}
       </View>
       {children}
@@ -101,7 +101,7 @@ export function TextAction({ title, onPress, destructive = false }: { title: str
       onPress={onPress}
       style={({ pressed }) => [{ padding: spacing.xs }, pressed && { opacity: 0.65 }]}
     >
-      <Txt variant="caption" color={destructive ? colors.red500 : colors.blue600} style={{ fontFamily: fonts.bold }}>{title}</Txt>
+      <Txt variant="caption" color={destructive ? colors.red500 : colors.brown700} style={{ fontFamily: fonts.bold }}>{title}</Txt>
     </Pressable>
   );
 }

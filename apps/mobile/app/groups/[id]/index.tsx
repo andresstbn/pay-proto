@@ -154,7 +154,7 @@ export default function GroupDetailScreen() {
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxxl, gap: spacing.xl }}>
         <ScreenHeader title="Detalle del grupo" />
 
-        <Card style={{ backgroundColor: colors.navy900, borderWidth: 0, gap: spacing.lg }}>
+        <Card style={{ backgroundColor: colors.brown700, borderWidth: 0, gap: spacing.lg }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
             <GroupMark name={group.name} size={58} />
             <View style={{ flex: 1, gap: spacing.xs }}>
@@ -173,7 +173,7 @@ export default function GroupDetailScreen() {
         {!isArchived ? (
           <Card style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
             <View style={{ flex: 1, gap: spacing.xs }}>
-              <Txt variant="subtitle" color={colors.navy900}>{isActive ? 'Participas en el reparto' : 'Participación en pausa'}</Txt>
+              <Txt variant="subtitle" color={colors.brown700}>{isActive ? 'Participas en el reparto' : 'Participación en pausa'}</Txt>
               <Txt variant="caption" color={colors.gray500} style={{ lineHeight: 18 }}>
                 {isActive ? 'Recibirás una parte de los próximos ingresos.' : 'No recibirás ingresos hasta que vuelvas a activarte.'}
               </Txt>
@@ -183,7 +183,7 @@ export default function GroupDetailScreen() {
               value={isActive}
               disabled={pending === 'participation'}
               onValueChange={(active) => { void runAction('participation', () => setParticipation(groupId, active)); }}
-              trackColor={{ false: colors.gray200, true: colors.blue500 }}
+              trackColor={{ false: colors.gray200, true: colors.brown500 }}
             />
           </Card>
         ) : (
@@ -208,7 +208,7 @@ export default function GroupDetailScreen() {
                 ref={groupQrCaptureRef}
                 style={{ backgroundColor: colors.white, padding: spacing.md, borderRadius: 14, borderWidth: 1, borderColor: colors.gray200 }}
               >
-                <QRCode value={JSON.stringify(groupOpenQrPayload(group.id))} size={172} color={colors.navy900} backgroundColor={colors.white} />
+                <QRCode value={JSON.stringify(groupOpenQrPayload(group.id))} size={172} color={colors.brown700} backgroundColor={colors.white} />
               </View>
               <View style={{ alignItems: 'center', gap: spacing.xs }}>
                 <Txt variant="subtitle">El cliente decide el importe</Txt>
@@ -237,11 +237,11 @@ export default function GroupDetailScreen() {
           ) : fixedQrs.map((qr) => (
             <Card key={qr.id} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, opacity: qr.status === GROUP_QR_STATUS.ACTIVE ? 1 : 0.6 }}>
               <View style={{ padding: spacing.xs, backgroundColor: colors.white }}>
-                <QRCode value={JSON.stringify(groupFixedQrPayload(qr.id))} size={70} color={colors.navy900} backgroundColor={colors.white} />
+                <QRCode value={JSON.stringify(groupFixedQrPayload(qr.id))} size={70} color={colors.brown700} backgroundColor={colors.white} />
               </View>
               <View style={{ flex: 1, gap: spacing.xs }}>
                 <Txt variant="subtitle">{qr.name}</Txt>
-                <Txt variant="body" color={colors.blue600} style={{ fontFamily: fonts.bold }}>{formatEuros(qr.amountInCents)}</Txt>
+                <Txt variant="body" color={colors.brown700} style={{ fontFamily: fonts.bold }}>{formatEuros(qr.amountInCents)}</Txt>
                 {qr.concept ? <Txt variant="caption" color={colors.gray500}>{qr.concept}</Txt> : null}
               </View>
               {canManage && qr.status === GROUP_QR_STATUS.ACTIVE && !isArchived ? (
@@ -337,7 +337,7 @@ export default function GroupDetailScreen() {
           ) : activity.slice(0, 12).map((item) => (
             <Card key={item.id} style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, padding: spacing.md, borderWidth: 0 }}>
               <View style={{ width: 40, height: 40, borderRadius: 20, backgroundColor: colors.gray100, alignItems: 'center', justifyContent: 'center' }}>
-                <MaterialIcons name={activityIcon(item)} size={20} color={colors.blue600} />
+                <MaterialIcons name={activityIcon(item)} size={20} color={colors.brown700} />
               </View>
               <View style={{ flex: 1 }}>
                 <Txt variant="body">{activityLabel(item, users)}</Txt>
@@ -362,7 +362,7 @@ function Metric({ value, label }: { value: string; label: string }) {
   return (
     <View style={{ flex: 1, alignItems: 'center' }}>
       <Txt variant="title" color={colors.white}>{value}</Txt>
-      <Txt variant="caption" color={colors.cyan400}>{label}</Txt>
+      <Txt variant="caption" color={colors.orange400}>{label}</Txt>
     </View>
   );
 }

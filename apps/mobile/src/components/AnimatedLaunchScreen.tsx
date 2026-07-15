@@ -112,12 +112,12 @@ export function AnimatedLaunchScreen({ ready, onComplete }: { ready: boolean; on
             <View style={styles.checkCircle}>
               <Txt variant="caption" color={colors.white} style={styles.check}>✓</Txt>
             </View>
-            <Txt variant="caption" color={colors.navy900} style={styles.paymentText}>Pago confirmado</Txt>
+            <Txt variant="caption" color={colors.brown700} style={styles.paymentText}>Pago confirmado</Txt>
           </Animated.View>
         </View>
 
-        <Txt variant="display" color={colors.white} style={styles.wordmark}>EricPay</Txt>
-        <Txt variant="body" color={colors.cyan400} style={styles.tagline}>Escanea. Paga. Listo.</Txt>
+        <Txt variant="display" color={colors.white} style={styles.wordmark}>Propi</Txt>
+        <Txt variant="body" color={colors.orange400} style={styles.tagline}>Escanea. Paga. Listo.</Txt>
       </Animated.View>
     </Animated.View>
   );
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.navy900,
+    backgroundColor: colors.brown700,
     overflow: 'hidden',
   },
   brand: { alignItems: 'center' },
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     width: 188,
     height: 188,
     borderRadius: 94,
-    backgroundColor: colors.blue600,
+    backgroundColor: colors.brown700,
     opacity: 0.16,
   },
   qrCard: {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     borderRadius: 26,
     backgroundColor: colors.white,
     borderWidth: 5,
-    borderColor: 'rgba(90,216,240,0.8)',
+    borderColor: 'rgba(255,183,135,0.8)',
   },
   finder: {
     position: 'absolute',
@@ -162,13 +162,13 @@ const styles = StyleSheet.create({
     padding: 5,
     borderWidth: 4,
     borderRadius: 5,
-    borderColor: colors.navy900,
+    borderColor: colors.brown700,
   },
-  finderCore: { flex: 1, borderRadius: 2, backgroundColor: colors.navy900 },
+  finderCore: { flex: 1, borderRadius: 2, backgroundColor: colors.brown700 },
   finderTopLeft: { left: 16, top: 16 },
   finderTopRight: { right: 16, top: 16 },
   finderBottomLeft: { left: 16, bottom: 16 },
-  qrCell: { position: 'absolute', width: 10, height: 10, borderRadius: 2, backgroundColor: colors.navy900 },
+  qrCell: { position: 'absolute', width: 10, height: 10, borderRadius: 2, backgroundColor: colors.brown700 },
   cellOne: { left: 58, top: 18 },
   cellTwo: { left: 58, top: 36 },
   cellThree: { right: 18, top: 58 },
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
     top: 60,
     height: 3,
     borderRadius: 2,
-    backgroundColor: colors.cyan400,
+    backgroundColor: colors.orange400,
   },
   paymentChip: {
     position: 'absolute',

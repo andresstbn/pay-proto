@@ -83,10 +83,10 @@ export default function Dashboard() {
   // Si no está en Web, mostramos mensaje de advertencia
   if (Platform.OS !== 'web') {
     return (
-      <View style={[styles.centeredContainer, { backgroundColor: colors.navy900 }]}>
+      <View style={[styles.centeredContainer, { backgroundColor: colors.brown700 }]}>
         <View style={{ width: '90%', maxWidth: 400, gap: spacing.lg, alignItems: 'center' }}>
           <View style={styles.warningIconContainer}>
-            <MaterialIcons name="computer" size={48} color={colors.yellow300} />
+            <MaterialIcons name="computer" size={48} color={colors.peach300} />
           </View>
           <Txt variant="title" color={colors.white} style={{ textAlign: 'center' }}>
             Panel reservado para Web
@@ -158,9 +158,9 @@ export default function Dashboard() {
           </View>
           <View>
             <Txt variant="subtitle" color={colors.white} style={{ fontFamily: fonts.bold }}>
-              EricPay Panel
+              Propi Panel
             </Txt>
-            <Txt variant="caption" color={colors.cyan400}>
+            <Txt variant="caption" color={colors.orange400}>
               Administración General
             </Txt>
           </View>
@@ -189,7 +189,7 @@ export default function Dashboard() {
 
           <Pressable
             onPress={handleLogout}
-            style={({ pressed }) => [styles.headerBtn, { backgroundColor: 'rgba(229, 72, 77, 0.2)' }, pressed && { opacity: 0.7 }]}
+            style={({ pressed }) => [styles.headerBtn, { backgroundColor: 'rgba(186, 26, 26, 0.2)' }, pressed && { opacity: 0.7 }]}
           >
             <MaterialIcons name="logout" size={18} color={colors.red500} />
             <Txt variant="caption" color={colors.red500} style={{ fontFamily: fonts.semibold }}>
@@ -235,11 +235,11 @@ export default function Dashboard() {
               <Txt variant="caption" color={colors.gray500} style={{ fontFamily: fonts.semibold }}>
                 Saldos en el Sistema
               </Txt>
-              <View style={[styles.kpiIconWrapper, { backgroundColor: colors.yellow100 }]}>
-                <MaterialIcons name="account-balance" size={20} color={colors.navy900} />
+              <View style={[styles.kpiIconWrapper, { backgroundColor: colors.peach100 }]}>
+                <MaterialIcons name="account-balance" size={20} color={colors.brown700} />
               </View>
             </View>
-            <Txt variant="display" color={colors.navy900} style={{ marginTop: spacing.xs, fontSize: 26 }}>
+            <Txt variant="display" color={colors.brown700} style={{ marginTop: spacing.xs, fontSize: 26 }}>
               {formatEuros(totalSystemBalanceInCents)}
             </Txt>
             <Txt variant="caption" color={colors.gray500} style={{ marginTop: spacing.xs }}>
@@ -253,10 +253,10 @@ export default function Dashboard() {
                 Total Usuarios
               </Txt>
               <View style={[styles.kpiIconWrapper, { backgroundColor: colors.gray100 }]}>
-                <MaterialIcons name="people" size={20} color={colors.blue600} />
+                <MaterialIcons name="people" size={20} color={colors.brown700} />
               </View>
             </View>
-            <Txt variant="display" color={colors.blue600} style={{ marginTop: spacing.xs, fontSize: 26 }}>
+            <Txt variant="display" color={colors.brown700} style={{ marginTop: spacing.xs, fontSize: 26 }}>
               {totalUsersCount}
             </Txt>
             <Txt variant="caption" color={colors.gray500} style={{ marginTop: spacing.xs }}>
@@ -270,7 +270,7 @@ export default function Dashboard() {
                 Total Transacciones
               </Txt>
               <View style={[styles.kpiIconWrapper, { backgroundColor: colors.gray100 }]}>
-                <MaterialIcons name="swap-horiz" size={20} color={colors.blue600} />
+                <MaterialIcons name="swap-horiz" size={20} color={colors.brown700} />
               </View>
             </View>
             <Txt variant="display" color={colors.gray900} style={{ marginTop: spacing.xs, fontSize: 26 }}>
@@ -284,7 +284,7 @@ export default function Dashboard() {
 
         {loading ? (
           <View style={{ paddingVertical: 100, alignItems: 'center' }}>
-            <ActivityIndicator color={colors.blue600} size="large" />
+            <ActivityIndicator color={colors.brown700} size="large" />
             <Txt variant="body" color={colors.gray500} style={{ marginTop: spacing.md }}>
               Cargando base de datos en vivo...
             </Txt>
@@ -296,7 +296,7 @@ export default function Dashboard() {
             <Card style={StyleSheet.flatten([styles.columnCard, { flex: isLargeScreen ? 1 : undefined }])}>
               <View style={styles.columnHeader}>
                 <View>
-                  <Txt variant="subtitle" color={colors.navy900} style={{ fontFamily: fonts.bold }}>
+                  <Txt variant="subtitle" color={colors.brown700} style={{ fontFamily: fonts.bold }}>
                     Usuarios del Sistema
                   </Txt>
                   <Txt variant="caption" color={colors.gray500}>
@@ -329,7 +329,7 @@ export default function Dashboard() {
                     <View key={u.id} style={styles.userListItem}>
                       <Avatar user={u} size={36} />
                       <View style={{ flex: 1, marginLeft: spacing.md }}>
-                        <Txt variant="body" color={colors.navy900} style={{ fontFamily: fonts.semibold }}>
+                        <Txt variant="body" color={colors.brown700} style={{ fontFamily: fonts.semibold }}>
                           {u.displayName}
                         </Txt>
                         <Txt variant="caption" color={colors.gray500}>
@@ -340,7 +340,7 @@ export default function Dashboard() {
                         </Txt>
                       </View>
                       <View style={{ alignItems: 'flex-end' }}>
-                        <Txt variant="body" color={colors.navy900} style={{ fontFamily: fonts.bold }}>
+                        <Txt variant="body" color={colors.brown700} style={{ fontFamily: fonts.bold }}>
                           {formatEuros(u.balanceInCents)}
                         </Txt>
                         <Txt variant="caption" color={colors.gray500}>
@@ -357,7 +357,7 @@ export default function Dashboard() {
             <Card style={StyleSheet.flatten([styles.columnCard, { flex: isLargeScreen ? 1.6 : undefined }])}>
               <View style={styles.columnHeader}>
                 <View>
-                  <Txt variant="subtitle" color={colors.navy900} style={{ fontFamily: fonts.bold }}>
+                  <Txt variant="subtitle" color={colors.brown700} style={{ fontFamily: fonts.bold }}>
                     Registro de Transacciones
                   </Txt>
                   <Txt variant="caption" color={colors.gray500}>
@@ -406,7 +406,7 @@ export default function Dashboard() {
                       <View key={t.id} style={styles.txListItem}>
                         <View style={{ gap: spacing.xs, flex: 1 }}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm, flexWrap: 'wrap' }}>
-                            <Txt variant="body" color={colors.navy900} style={{ fontFamily: fonts.semibold }}>
+                            <Txt variant="body" color={colors.brown700} style={{ fontFamily: fonts.semibold }}>
                               {t.concept || 'Pago'}
                             </Txt>
                             <Badge status={t.status === 'completed' ? 'paid' : 'pending'} label={t.status === 'completed' ? 'Completado' : t.status} />
@@ -421,13 +421,13 @@ export default function Dashboard() {
                             <Txt variant="caption" color={colors.gray500}>
                               De:
                             </Txt>
-                            <Txt variant="caption" color={colors.navy900} style={{ fontFamily: fonts.semibold }}>
+                            <Txt variant="caption" color={colors.brown700} style={{ fontFamily: fonts.semibold }}>
                               {payer?.displayName || t.payerId.slice(0, 8)}
                             </Txt>
                             <Txt variant="caption" color={colors.gray500}>
                               Para:
                             </Txt>
-                            <Txt variant="caption" color={colors.navy900} style={{ fontFamily: fonts.semibold }}>
+                            <Txt variant="caption" color={colors.brown700} style={{ fontFamily: fonts.semibold }}>
                               {recipient?.displayName || t.recipientId.slice(0, 8)}
                             </Txt>
                           </View>
@@ -438,7 +438,7 @@ export default function Dashboard() {
                         </View>
 
                         <View style={{ alignItems: 'flex-end', justifyContent: 'center' }}>
-                          <Txt variant="subtitle" color={colors.navy900} style={{ fontFamily: fonts.bold, fontSize: 18 }}>
+                          <Txt variant="subtitle" color={colors.brown700} style={{ fontFamily: fonts.bold, fontSize: 18 }}>
                             {formatEuros(t.amountInCents)}
                           </Txt>
                           <Txt variant="caption" color={colors.gray500}>
@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: colors.navy900,
+    backgroundColor: colors.brown700,
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.xl,
     flexWrap: 'wrap',
@@ -486,7 +486,7 @@ const styles = StyleSheet.create({
   },
   avatarBorder: {
     borderWidth: 2,
-    borderColor: colors.cyan400,
+    borderColor: colors.orange400,
     borderRadius: 20,
     padding: 2,
   },

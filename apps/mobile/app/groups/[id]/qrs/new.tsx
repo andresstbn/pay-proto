@@ -39,7 +39,7 @@ export default function NewGroupQrScreen() {
       <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.xl }} keyboardShouldPersistTaps="handled">
         <ScreenHeader title="Nuevo QR fijo" />
         <View style={{ gap: spacing.xs }}>
-          <Txt variant="display" color={colors.navy900} style={{ fontSize: 28 }}>Un importe, todos los cobros</Txt>
+          <Txt variant="display" color={colors.brown700} style={{ fontSize: 28 }}>Un importe, todos los cobros</Txt>
           <Txt variant="body" color={colors.gray500}>Este QR seguirá activo hasta que un administrador lo desactive.</Txt>
         </View>
         <Card style={{ gap: spacing.lg }}>

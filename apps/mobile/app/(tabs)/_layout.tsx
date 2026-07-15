@@ -20,7 +20,7 @@ export default function TabsLayout() {
           config: { duration: reduceMotion ? 0 : 220, easing: Easing.out(Easing.cubic) },
         },
         sceneStyle: { backgroundColor: colors.gray50 },
-        tabBarActiveTintColor: colors.blue600,
+        tabBarActiveTintColor: colors.brown700,
         tabBarInactiveTintColor: colors.gray500,
         tabBarLabelStyle: { fontSize: 12, fontFamily: fonts.semibold },
         // Estilo de la barra de pestañas

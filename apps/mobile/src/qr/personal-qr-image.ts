@@ -1,7 +1,7 @@
 export type PersonalQrImageOutcome = 'shared' | 'saved' | 'downloaded';
 
-const QR_FILE_NAME = 'ericpay-qr-personal.png';
-const GROUP_QR_FILE_NAME = 'ericpay-qr-grupo.png';
+const QR_FILE_NAME = 'propi-qr-personal.png';
+const GROUP_QR_FILE_NAME = 'propi-qr-grupo.png';
 
 function downloadImage(dataUri: string, fileName: string) {
   if (typeof document === 'undefined') throw new Error('qr/download-unavailable');
@@ -45,7 +45,7 @@ async function shareQrImage(
 }
 
 export function sharePersonalQrImage(dataUri: string): Promise<PersonalQrImageOutcome> {
-  return shareQrImage(dataUri, QR_FILE_NAME, 'Mi QR de EricPay');
+  return shareQrImage(dataUri, QR_FILE_NAME, 'Mi QR de Propi');
 }
 
 export function shareGroupQrImage(dataUri: string, groupName: string): Promise<PersonalQrImageOutcome> {

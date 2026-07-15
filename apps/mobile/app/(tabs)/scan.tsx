@@ -9,7 +9,7 @@ import { liveStatus, useProtectedUser, useStore } from '../../src/domain/store';
 import { QrPayload } from '../../src/domain/types';
 import { GROUP_QR_KIND, GROUP_QR_STATUS, GROUP_QR_TYPE } from '../../src/groups/constants';
 import { useGroups } from '../../src/groups/GroupProvider';
-import { groupFixedQrPayload, groupOpenQrPayload, parseEricPayQr } from '../../src/groups/qr';
+import { groupFixedQrPayload, groupOpenQrPayload, parsePropiQr } from '../../src/groups/qr';
 import { colors, fonts, spacing } from '../../src/theme/theme';
 
 const FRAME = 240;
@@ -65,7 +65,7 @@ export default function Scan() {
   }
 
   function onBarcodeScanned({ data }: { data: string }) {
-    const payload = parseEricPayQr(data);
+    const payload = parsePropiQr(data);
     if (payload) route(payload);
   }
 
@@ -79,7 +79,7 @@ export default function Scan() {
   ).map((qr) => ({ group, qr })));
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.navy900 }}>
+    <View style={{ flex: 1, backgroundColor: colors.brown700 }}>
       {permission?.granted && (
         <>
           <CameraView
@@ -89,7 +89,7 @@ export default function Scan() {
             barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
             onBarcodeScanned={onBarcodeScanned}
           />
-          <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(11,20,54,0.45)' }]} />
+          <View style={[StyleSheet.absoluteFill, { backgroundColor: 'rgba(48,20,0,0.45)' }]} />
         </>
       )}
 
@@ -101,9 +101,9 @@ export default function Scan() {
           </Pressable>
           <Pressable
             onPress={() => setTorchOn((v) => !v)}
-            style={({ pressed }) => [styles.roundBtn, torchOn && { backgroundColor: colors.cyan400 }, pressed && { opacity: 0.7 }]}
+            style={({ pressed }) => [styles.roundBtn, torchOn && { backgroundColor: colors.orange400 }, pressed && { opacity: 0.7 }]}
           >
-            <MaterialIcons name="flashlight-on" size={24} color={torchOn ? colors.navy900 : colors.white} />
+            <MaterialIcons name="flashlight-on" size={24} color={torchOn ? colors.brown700 : colors.white} />
           </Pressable>
         </View>
 
@@ -120,8 +120,8 @@ export default function Scan() {
                   <Animated.View
                     style={{
                       height: 2,
-                      backgroundColor: colors.cyan400,
-                      shadowColor: colors.cyan400,
+                      backgroundColor: colors.orange400,
+                      shadowColor: colors.orange400,
                       shadowOpacity: 1,
                       shadowRadius: 8,
                       shadowOffset: { width: 0, height: 0 },
@@ -131,7 +131,7 @@ export default function Scan() {
                 </View>
               </View>
               <Txt variant="title" color={colors.white} style={{ fontSize: 20, marginTop: spacing.xl }}>Escanea un código QR</Txt>
-              <Txt variant="body" color={colors.cyan400} style={{ marginTop: spacing.xs, textAlign: 'center', paddingHorizontal: spacing.xxl }}>
+              <Txt variant="body" color={colors.orange400} style={{ marginTop: spacing.xs, textAlign: 'center', paddingHorizontal: spacing.xxl }}>
                 Apunta al código para pagar o transferir instantáneamente
               </Txt>
               {/* ponytail: botón decorativo — leer QR desde galería no existe en esta fase */}
@@ -158,7 +158,7 @@ export default function Scan() {
 
         {/* Simulador de escaneo (SPEC-001): imprescindible sin cámara/QRs físicos */}
         <View style={styles.simPanel}>
-          <Txt variant="caption" color={colors.cyan400} style={{ fontFamily: fonts.bold, letterSpacing: 1.5, marginBottom: spacing.sm }}>
+          <Txt variant="caption" color={colors.orange400} style={{ fontFamily: fonts.bold, letterSpacing: 1.5, marginBottom: spacing.sm }}>
             SIMULAR ESCANEO
           </Txt>
           <ScrollView style={{ maxHeight: 190 }} contentContainerStyle={{ gap: spacing.sm }} showsVerticalScrollIndicator={false}>
@@ -182,7 +182,7 @@ export default function Scan() {
                     </Txt>
                     <Txt variant="caption" color="rgba(255,255,255,0.6)">{r.concept || 'Cobro puntual'}</Txt>
                   </View>
-                  <Txt variant="subtitle" color={colors.yellow300} style={{ fontSize: 15 }}>{formatEuros(r.amountInCents)}</Txt>
+                  <Txt variant="subtitle" color={colors.peach300} style={{ fontSize: 15 }}>{formatEuros(r.amountInCents)}</Txt>
                 </SimRow>
               );
             })}
@@ -195,7 +195,7 @@ export default function Scan() {
                     <Txt variant="body" color={colors.white} style={{ fontFamily: fonts.semibold }}>{q.name}</Txt>
                     <Txt variant="caption" color="rgba(255,255,255,0.6)">De {owner?.displayName || 'Usuario'}</Txt>
                   </View>
-                  <Txt variant="subtitle" color={colors.cyan400} style={{ fontSize: 15 }}>{formatEuros(q.amountInCents)}</Txt>
+                  <Txt variant="subtitle" color={colors.orange400} style={{ fontSize: 15 }}>{formatEuros(q.amountInCents)}</Txt>
                 </SimRow>
               );
             })}
@@ -204,8 +204,8 @@ export default function Scan() {
                 key={`go-${group.id}`}
                 onPress={() => route(groupOpenQrPayload(group.id))}
               >
-                <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.cyan400 }}>
-                  <MaterialIcons name="groups" size={20} color={colors.navy900} />
+                <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.orange400 }}>
+                  <MaterialIcons name="groups" size={20} color={colors.brown700} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Txt variant="body" color={colors.white} style={{ fontFamily: fonts.semibold }}>{group.name}</Txt>
@@ -218,14 +218,14 @@ export default function Scan() {
                 key={`gf-${qr.id}`}
                 onPress={() => route(groupFixedQrPayload(qr.id))}
               >
-                <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.yellow300 }}>
-                  <MaterialIcons name="qr-code-2" size={20} color={colors.navy900} />
+                <View style={{ width: 36, height: 36, borderRadius: 12, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.peach300 }}>
+                  <MaterialIcons name="qr-code-2" size={20} color={colors.brown700} />
                 </View>
                 <View style={{ flex: 1 }}>
                   <Txt variant="body" color={colors.white} style={{ fontFamily: fonts.semibold }}>{qr.name}</Txt>
                   <Txt variant="caption" color="rgba(255,255,255,0.6)">{group.name}</Txt>
                 </View>
-                <Txt variant="subtitle" color={colors.yellow300} style={{ fontSize: 15 }}>{formatEuros(qr.amountInCents)}</Txt>
+                <Txt variant="subtitle" color={colors.peach300} style={{ fontSize: 15 }}>{formatEuros(qr.amountInCents)}</Txt>
               </SimRow>
             ))}
             {otherUsers.length + pendingRequests.length + activeReusables.length + groups.length + activeGroupQrs.length === 0 && (
@@ -264,7 +264,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: 'rgba(22,32,79,0.5)',
+    backgroundColor: 'rgba(74,34,0,0.5)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -272,14 +272,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: 48,
     height: 48,
-    borderColor: colors.cyan400,
+    borderColor: colors.orange400,
   },
   galleryBtn: {
     marginTop: spacing.xl,
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    backgroundColor: 'rgba(22,32,79,0.6)',
+    backgroundColor: 'rgba(74,34,0,0.6)',
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.1)',
     paddingHorizontal: spacing.xl,
@@ -287,7 +287,7 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   simPanel: {
-    backgroundColor: 'rgba(11,20,54,0.88)',
+    backgroundColor: 'rgba(48,20,0,0.88)',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: spacing.lg,

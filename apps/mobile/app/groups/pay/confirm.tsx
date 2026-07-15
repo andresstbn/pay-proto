@@ -79,20 +79,20 @@ export default function GroupPayConfirmScreen() {
       <ScreenHeader title="Confirmar reparto" />
       {loadingPreview ? (
         <Card style={{ alignItems: 'center', gap: spacing.md, padding: spacing.xxl }}>
-          <MaterialIcons name="hourglass-top" size={36} color={colors.blue600} />
+          <MaterialIcons name="hourglass-top" size={36} color={colors.brown700} />
           <Txt variant="body" color={colors.gray500}>Calculando el reparto actual…</Txt>
         </Card>
       ) : preview ? (
         <>
           <Card style={{ alignItems: 'center', gap: spacing.md, paddingVertical: spacing.xl }}>
-            <View style={{ width: 64, height: 64, borderRadius: 22, backgroundColor: colors.navy900, alignItems: 'center', justifyContent: 'center' }}>
-              <MaterialIcons name="groups" size={34} color={colors.cyan400} />
+            <View style={{ width: 64, height: 64, borderRadius: 22, backgroundColor: colors.brown700, alignItems: 'center', justifyContent: 'center' }}>
+              <MaterialIcons name="groups" size={34} color={colors.orange400} />
             </View>
             <View style={{ alignItems: 'center', gap: spacing.xs }}>
               <Txt variant="caption" color={colors.gray500}>Vas a pagar a</Txt>
-              <Txt variant="title" color={colors.navy900}>{preview.groupName}</Txt>
+              <Txt variant="title" color={colors.brown700}>{preview.groupName}</Txt>
             </View>
-            <Txt variant="display" color={colors.navy900} style={{ fontSize: 38 }}>{formatEuros(preview.amountInCents)}</Txt>
+            <Txt variant="display" color={colors.brown700} style={{ fontSize: 38 }}>{formatEuros(preview.amountInCents)}</Txt>
             {preview.concept ? <Txt variant="body" color={colors.gray500}>{preview.concept}</Txt> : null}
           </Card>
 
@@ -101,9 +101,9 @@ export default function GroupPayConfirmScreen() {
             <SummaryRow label="Saldo disponible" value={formatEuros(user.balanceInCents)} />
           </Card>
 
-          <Card style={{ flexDirection: 'row', gap: spacing.sm, backgroundColor: colors.yellow100, borderWidth: 0 }}>
-            <MaterialIcons name="privacy-tip" size={20} color={colors.navy900} />
-            <Txt variant="caption" color={colors.navy700} style={{ flex: 1, lineHeight: 18 }}>
+          <Card style={{ flexDirection: 'row', gap: spacing.sm, backgroundColor: colors.peach100, borderWidth: 0 }}>
+            <MaterialIcons name="privacy-tip" size={20} color={colors.brown700} />
+            <Txt variant="caption" color={colors.orange500} style={{ flex: 1, lineHeight: 18 }}>
               El grupo decidirá el reparto definitivo al confirmar. No mostramos las identidades de sus miembros.
             </Txt>
           </Card>
@@ -129,7 +129,7 @@ function SummaryRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md }}>
       <Txt variant="caption" color={colors.gray500}>{label}</Txt>
-      <Txt variant="subtitle" color={colors.navy900}>{value}</Txt>
+      <Txt variant="subtitle" color={colors.brown700}>{value}</Txt>
     </View>
   );
 }

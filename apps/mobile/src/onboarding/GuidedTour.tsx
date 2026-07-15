@@ -20,7 +20,7 @@ const TOUR_STEPS = [
   {
     eyebrow: 'TODO BAJO CONTROL',
     title: 'Tu dinero, en un vistazo',
-    description: 'Consulta tu saldo y tus últimos movimientos apenas abras EricPay.',
+    description: 'Consulta tu saldo y tus últimos movimientos apenas abras Propi.',
     icon: 'account-balance-wallet',
   },
   {
@@ -166,7 +166,7 @@ export function GuidedTour({
           <View style={styles.brandMark}>
             <Txt variant="subtitle" color={colors.white} style={styles.brandLetter}>E</Txt>
           </View>
-          <Txt variant="subtitle" color={colors.white} style={styles.brandName}>EricPay</Txt>
+          <Txt variant="subtitle" color={colors.white} style={styles.brandName}>Propi</Txt>
           <Pressable
             accessibilityLabel="Omitir recorrido"
             disabled={transitioning}
@@ -186,7 +186,7 @@ export function GuidedTour({
         >
           <FeaturePreview stepIndex={stepIndex} icon={step.icon} />
           <View style={styles.copy}>
-            <Txt variant="caption" color={colors.cyan400} style={styles.eyebrow}>{step.eyebrow}</Txt>
+            <Txt variant="caption" color={colors.orange400} style={styles.eyebrow}>{step.eyebrow}</Txt>
             <Txt variant="display" color={colors.white} style={styles.title}>{step.title}</Txt>
             <Txt variant="body" color={colors.gray200} style={styles.description}>{step.description}</Txt>
           </View>
@@ -206,15 +206,15 @@ export function GuidedTour({
             ))}
           </View>
           <Pressable
-            accessibilityLabel={stepIndex === TOUR_STEPS.length - 1 ? 'Empezar a usar EricPay' : 'Siguiente paso'}
+            accessibilityLabel={stepIndex === TOUR_STEPS.length - 1 ? 'Empezar a usar Propi' : 'Siguiente paso'}
             disabled={transitioning}
             onPress={advance}
             style={({ pressed }) => [styles.next, pressed && styles.nextPressed]}
           >
-            <Txt variant="subtitle" color={colors.navy900} style={styles.nextText}>
+            <Txt variant="subtitle" color={colors.brown700} style={styles.nextText}>
               {stepIndex === TOUR_STEPS.length - 1 ? 'Empezar' : 'Siguiente'}
             </Txt>
-            <MaterialIcons name="arrow-forward" size={20} color={colors.navy900} />
+            <MaterialIcons name="arrow-forward" size={20} color={colors.brown700} />
           </Pressable>
         </View>
       </View>
@@ -238,7 +238,7 @@ function FeaturePreview({
         </View>
         {stepIndex === 0 && (
           <View style={styles.balancePreview}>
-            <Txt variant="caption" color={colors.cyan400} style={styles.previewLabel}>SALDO DISPONIBLE</Txt>
+            <Txt variant="caption" color={colors.orange400} style={styles.previewLabel}>SALDO DISPONIBLE</Txt>
             <Txt variant="display" color={colors.white} style={styles.previewAmount}>€1.280,50</Txt>
             <View style={styles.growthChip}>
               <MaterialIcons name="trending-up" size={16} color={colors.green500} />
@@ -250,7 +250,7 @@ function FeaturePreview({
           <View style={styles.transferPreview}>
             <View style={styles.transferParty}>
               <View style={styles.senderIcon}>
-                <MaterialIcons name="account-circle" size={30} color={colors.blue600} />
+                <MaterialIcons name="account-circle" size={30} color={colors.brown700} />
               </View>
               <Txt variant="caption" color={colors.gray200} style={styles.partyLabel}>Tú</Txt>
             </View>
@@ -259,11 +259,11 @@ function FeaturePreview({
               <View style={styles.sendIcon}>
                 <MaterialIcons name="send" size={22} color={colors.white} />
               </View>
-              <Txt variant="caption" color={colors.cyan400} style={styles.transferAmount}>€25</Txt>
+              <Txt variant="caption" color={colors.orange400} style={styles.transferAmount}>€25</Txt>
             </View>
             <View style={styles.transferParty}>
               <View style={styles.receiverIcon}>
-                <MaterialIcons name="storefront" size={27} color={colors.navy900} />
+                <MaterialIcons name="storefront" size={27} color={colors.brown700} />
               </View>
               <Txt variant="caption" color={colors.gray200} style={styles.partyLabel}>Destino</Txt>
             </View>
@@ -271,7 +271,7 @@ function FeaturePreview({
         )}
         {stepIndex === 2 && (
           <View style={styles.qrPreview}>
-            <MaterialIcons name="qr-code-2" size={104} color={colors.navy900} />
+            <MaterialIcons name="qr-code-2" size={104} color={colors.brown700} />
             <View style={styles.scanLine} />
           </View>
         )}
@@ -280,7 +280,7 @@ function FeaturePreview({
             <View style={styles.successIcon}><MaterialIcons name="check" size={22} color={colors.white} /></View>
             <View style={{ flex: 1 }}>
               <Txt variant="caption" color={colors.gray500}>Pago recibido</Txt>
-              <Txt variant="subtitle" color={colors.navy900}>+ €45,00</Txt>
+              <Txt variant="subtitle" color={colors.brown700}>+ €45,00</Txt>
             </View>
             <View style={styles.liveDot} />
           </View>
@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
     paddingHorizontal: spacing.xl,
-    backgroundColor: 'rgba(7,14,40,0.98)',
+    backgroundColor: 'rgba(48,20,0,0.98)',
   },
   header: { flexDirection: 'row', alignItems: 'center' },
   brandMark: {
@@ -303,9 +303,9 @@ const styles = StyleSheet.create({
     borderRadius: 11,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.blue600,
+    backgroundColor: colors.brown700,
     borderWidth: 1,
-    borderColor: 'rgba(90,216,240,0.6)',
+    borderColor: 'rgba(255,183,135,0.6)',
   },
   brandLetter: { fontFamily: fonts.extrabold },
   brandName: { marginLeft: spacing.sm, fontFamily: fonts.bold },
@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     width: 230,
     height: 230,
     borderRadius: 115,
-    backgroundColor: colors.blue600,
+    backgroundColor: colors.brown700,
     opacity: 0.2,
   },
   previewCard: {
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     justifyContent: 'center',
     overflow: 'hidden',
-    backgroundColor: colors.navy700,
+    backgroundColor: colors.orange500,
     borderWidth: 1,
     borderColor: 'rgba(255,255,255,0.12)',
   },
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.blue600,
+    backgroundColor: colors.brown700,
   },
   balancePreview: { gap: spacing.sm },
   previewLabel: { fontFamily: fonts.bold, letterSpacing: 1.5 },
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.white,
     borderWidth: 3,
-    borderColor: 'rgba(74,107,255,0.28)',
+    borderColor: 'rgba(255,133,27,0.28)',
   },
   receiverIcon: {
     width: 64,
@@ -381,20 +381,20 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.yellow300,
+    backgroundColor: colors.peach300,
     borderWidth: 3,
-    borderColor: 'rgba(246,217,143,0.24)',
+    borderColor: 'rgba(255,187,139,0.24)',
   },
   partyLabel: { fontFamily: fonts.semibold },
   transferPath: { width: 92, height: 84, alignItems: 'center', justifyContent: 'center' },
-  transferLine: { position: 'absolute', left: 0, right: 0, height: 2, backgroundColor: 'rgba(90,216,240,0.3)' },
+  transferLine: { position: 'absolute', left: 0, right: 0, height: 2, backgroundColor: 'rgba(255,183,135,0.3)' },
   sendIcon: {
     width: 46,
     height: 46,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.blue600,
+    backgroundColor: colors.brown700,
     transform: [{ rotate: '-8deg' }],
   },
   transferAmount: {
@@ -405,7 +405,7 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
     overflow: 'hidden',
     fontFamily: fonts.bold,
-    backgroundColor: 'rgba(90,216,240,0.12)',
+    backgroundColor: 'rgba(255,183,135,0.12)',
   },
   qrPreview: {
     width: 144,
@@ -422,7 +422,7 @@ const styles = StyleSheet.create({
     right: spacing.md,
     top: 70,
     height: 2,
-    backgroundColor: colors.cyan400,
+    backgroundColor: colors.orange400,
   },
   notificationPreview: {
     flexDirection: 'row',
@@ -440,7 +440,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.green500,
   },
-  liveDot: { width: 9, height: 9, borderRadius: 5, backgroundColor: colors.cyan400 },
+  liveDot: { width: 9, height: 9, borderRadius: 5, backgroundColor: colors.orange400 },
   copy: { gap: spacing.md },
   eyebrow: { fontFamily: fonts.bold, letterSpacing: 1.8 },
   title: { fontSize: 34, lineHeight: 39, letterSpacing: -0.8 },
@@ -448,7 +448,7 @@ const styles = StyleSheet.create({
   footer: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
   progress: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   progressDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: 'rgba(255,255,255,0.24)' },
-  progressDotActive: { width: 25, backgroundColor: colors.cyan400 },
+  progressDotActive: { width: 25, backgroundColor: colors.orange400 },
   next: {
     minWidth: 146,
     minHeight: 52,
@@ -458,7 +458,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: spacing.sm,
     borderRadius: radius.pill,
-    backgroundColor: colors.cyan400,
+    backgroundColor: colors.orange400,
   },
   nextPressed: { opacity: 0.86, transform: [{ scale: 0.98 }] },
   nextText: { fontFamily: fonts.bold },

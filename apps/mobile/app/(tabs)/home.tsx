@@ -32,7 +32,7 @@ export default function Home() {
   if (!user) {
     return (
       <Screen style={{ alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator color={colors.cyan400} size="large" />
+        <ActivityIndicator color={colors.orange400} size="large" />
       </Screen>
     );
   }
@@ -57,7 +57,7 @@ export default function Home() {
       <ScrollView contentContainerStyle={{ padding: spacing.lg, gap: spacing.xl }}>
         {/* Tarjeta de saldo */}
         <LinearGradient
-          colors={[colors.navy900, colors.navy700]}
+          colors={[colors.brown700, colors.orange500]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={{
@@ -76,12 +76,12 @@ export default function Home() {
               width: 140,
               height: 140,
               borderRadius: 70,
-              backgroundColor: colors.cyan400,
+              backgroundColor: colors.orange400,
               opacity: 0.12,
             }}
           />
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm }}>
-            <Txt variant="caption" color={colors.cyan400} style={{ fontSize: 12, fontFamily: fonts.bold, letterSpacing: 2 }}>
+            <Txt variant="caption" color={colors.orange400} style={{ fontSize: 12, fontFamily: fonts.bold, letterSpacing: 2 }}>
               SALDO DISPONIBLE
             </Txt>
             <Pressable onPress={() => setBalanceHidden((v) => !v)} hitSlop={8}>
@@ -105,8 +105,8 @@ export default function Home() {
                 padding: spacing.sm,
               }}
             >
-              <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(90,216,240,0.2)', alignItems: 'center', justifyContent: 'center' }}>
-                <MaterialIcons name="trending-up" size={16} color={colors.cyan400} />
+              <View style={{ width: 32, height: 32, borderRadius: 16, backgroundColor: 'rgba(255,183,135,0.2)', alignItems: 'center', justifyContent: 'center' }}>
+                <MaterialIcons name="trending-up" size={16} color={colors.orange400} />
               </View>
               <Txt variant="caption" color="rgba(255,255,255,0.8)">
                 Has ahorrado <Txt variant="caption" color={colors.green500} style={{ fontFamily: fonts.bold }}>+{formatEuros(netThisMonth)}</Txt> este mes
@@ -137,7 +137,7 @@ export default function Home() {
                   ...shadow.card,
                 }}
               >
-                <MaterialIcons name={a.icon} size={28} color={colors.blue600} />
+                <MaterialIcons name={a.icon} size={28} color={colors.brown700} />
               </View>
               <Txt variant="caption" color={colors.gray500} style={{ fontSize: 12, fontFamily: fonts.bold }}>
                 {a.label}
@@ -149,7 +149,7 @@ export default function Home() {
         {/* ponytail: banner decorativo — Inversión no existe como feature en esta fase */}
         <View
           style={{
-            backgroundColor: colors.yellow300,
+            backgroundColor: colors.peach300,
             borderRadius: radius.card,
             padding: spacing.lg,
             flexDirection: 'row',
@@ -159,10 +159,10 @@ export default function Home() {
           }}
         >
           <View style={{ flex: 1 }}>
-            <Txt variant="subtitle" color={colors.navy900}>Inversión EricPay</Txt>
-            <Txt variant="caption" color={colors.navy700}>Haz crecer tu dinero con un 12% de rendimiento anual.</Txt>
+            <Txt variant="subtitle" color={colors.brown700}>Inversión Propi</Txt>
+            <Txt variant="caption" color={colors.orange500}>Haz crecer tu dinero con un 12% de rendimiento anual.</Txt>
           </View>
-          <View style={{ backgroundColor: colors.navy900, borderRadius: radius.pill, paddingVertical: spacing.sm, paddingHorizontal: spacing.lg }}>
+          <View style={{ backgroundColor: colors.brown700, borderRadius: radius.pill, paddingVertical: spacing.sm, paddingHorizontal: spacing.lg }}>
             <Txt variant="caption" color={colors.white} style={{ fontSize: 12, fontFamily: fonts.bold }}>Explorar</Txt>
           </View>
         </View>
@@ -170,9 +170,9 @@ export default function Home() {
         {/* Actividad reciente */}
         <View style={{ gap: spacing.md }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-            <Txt variant="title" color={colors.navy900} style={{ fontSize: 20 }}>Actividad reciente</Txt>
+            <Txt variant="title" color={colors.brown700} style={{ fontSize: 20 }}>Actividad reciente</Txt>
             <Pressable onPress={() => router.push('/history')} hitSlop={8}>
-              <Txt variant="caption" color={colors.blue600} style={{ fontFamily: fonts.bold }}>Ver todo</Txt>
+              <Txt variant="caption" color={colors.brown700} style={{ fontFamily: fonts.bold }}>Ver todo</Txt>
             </Pressable>
           </View>
 
@@ -211,7 +211,7 @@ export default function Home() {
                     <MaterialIcons
                       name={isSent ? 'north-east' : 'account-balance-wallet'}
                       size={22}
-                      color={isSent ? colors.navy700 : colors.green500}
+                      color={isSent ? colors.orange500 : colors.green500}
                     />
                   </View>
                   <View>

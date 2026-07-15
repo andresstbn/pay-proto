@@ -45,7 +45,7 @@ export function ScreenHeader({ title, onBack, rightAccessory }: { title: string;
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: spacing.sm }}>
       <Pressable onPress={handleBack} hitSlop={12} accessibilityLabel="Volver">
-        <MaterialIcons name="arrow-back" size={24} color={colors.navy900} />
+        <MaterialIcons name="arrow-back" size={24} color={colors.brown700} />
       </Pressable>
       <Txt variant="title" style={{ flex: 1 }}>{title}</Txt>
       {rightAccessory}
@@ -99,7 +99,7 @@ export function Avatar({ user, size = 36, style }: { user?: User | null; size?: 
           width: size,
           height: size,
           borderRadius: size / 2,
-          backgroundColor: colors.blue600,
+          backgroundColor: colors.brown700,
           alignItems: 'center',
           justifyContent: 'center',
         },
@@ -155,7 +155,7 @@ export function Txt({
 }
 
 // Header de marca compartido por las pantallas principales (DESIGN.md): degradado
-// navy, avatar con borde cian, wordmark y campana (decorativa en esta fase).
+// de marca, avatar con borde naranja, wordmark y campana (decorativa en esta fase).
 export function BrandHeader({
   user,
   greeting,
@@ -167,7 +167,7 @@ export function BrandHeader({
   const router = useRouter();
   return (
     <LinearGradient
-      colors={[colors.navy900, colors.navy700]}
+      colors={[colors.brown700, colors.orange500]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={{
@@ -180,12 +180,12 @@ export function BrandHeader({
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.sm }}>
-        <Avatar user={user} size={40} style={{ borderWidth: 2, borderColor: colors.cyan400 }} />
+        <Avatar user={user} size={40} style={{ borderWidth: 2, borderColor: colors.orange400 }} />
         <View>
           {greeting ? (
-            <Txt variant="caption" color={colors.cyan400} style={{ opacity: 0.8 }}>{greeting}</Txt>
+            <Txt variant="caption" color={colors.orange400} style={{ opacity: 0.8 }}>{greeting}</Txt>
           ) : null}
-          <Txt variant="subtitle" color={colors.white} style={{ fontSize: 20, fontFamily: fonts.bold }}>EricPay</Txt>
+          <Txt variant="subtitle" color={colors.white} style={{ fontSize: 20, fontFamily: fonts.bold }}>Propi</Txt>
         </View>
       </View>
       <View style={{ flexDirection: 'row', gap: spacing.sm }}>
@@ -246,7 +246,7 @@ export function Button({
       <Text
         style={[
           typography.subtitle,
-          { color: textColor ?? (variant === 'outline' ? colors.blue600 : variant === 'accent' ? colors.navy900 : colors.white) },
+          { color: textColor ?? (variant === 'outline' ? colors.brown700 : variant === 'accent' ? colors.brown700 : colors.white) },
         ]}
       >
         {title}
@@ -258,7 +258,7 @@ export function Button({
 export type BadgeStatus = 'pending' | 'paid' | 'expired' | 'cancelled' | 'error';
 
 const badgeStyles: Record<BadgeStatus, { bg: string; fg: string; label: string }> = {
-  pending: { bg: colors.yellow100, fg: colors.navy900, label: 'Pendiente' },
+  pending: { bg: colors.peach100, fg: colors.brown700, label: 'Pendiente' },
   paid: { bg: '#E4F6ED', fg: colors.green500, label: 'Pagado' },
   expired: { bg: colors.gray200, fg: colors.gray500, label: 'Expirado' },
   cancelled: { bg: colors.gray200, fg: colors.gray500, label: 'Cancelado' },
@@ -307,9 +307,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  buttonPrimary: { backgroundColor: colors.blue600 },
-  buttonAccent: { backgroundColor: colors.yellow300 },
-  buttonOutline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.blue600 },
+  buttonPrimary: { backgroundColor: colors.brown700 },
+  buttonAccent: { backgroundColor: colors.peach300 },
+  buttonOutline: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.brown700 },
   buttonDisabled: { opacity: 0.4 },
   badge: {
     paddingHorizontal: spacing.md,

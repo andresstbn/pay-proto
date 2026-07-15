@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "EricPay",
+    "name": "Propi",
     "slug": "ericpay",
     "scheme": "ericpay",
     "version": "0.1.0",
@@ -20,7 +20,7 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#0B1436",
+          "backgroundColor": "#FFF9F2",
           "image": "./assets/splash-icon.png",
           "imageWidth": 180,
           "resizeMode": "contain"
@@ -33,7 +33,7 @@
         "expo-media-library",
         {
           "photosPermission": false,
-          "savePhotosPermission": "Permitir que EricPay guarde tu código QR en Fotos.",
+          "savePhotosPermission": "Permitir que Propi guarde tu código QR en Fotos.",
           "granularPermissions": []
         }
       ]
@@ -45,7 +45,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "#FFF9F2",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"

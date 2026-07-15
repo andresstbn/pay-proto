@@ -19,7 +19,7 @@ export default function ReusableQrScreen() {
   const qr = reusableQrs[qrId];
   if (!qr) {
     return (
-      <View style={{ flex: 1, backgroundColor: colors.navy900, alignItems: 'center', justifyContent: 'center', gap: spacing.lg }}>
+      <View style={{ flex: 1, backgroundColor: colors.brown700, alignItems: 'center', justifyContent: 'center', gap: spacing.lg }}>
         <Txt color={colors.white}>QR no encontrado.</Txt>
         <Button title="Volver al inicio" onPress={() => router.replace('/home')} />
       </View>
@@ -30,15 +30,15 @@ export default function ReusableQrScreen() {
   const isOwner = qr.ownerId === user.id;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.navy900, padding: spacing.xl, justifyContent: 'center', alignItems: 'center', gap: spacing.xl }}>
-      <View style={{ backgroundColor: colors.white, padding: spacing.lg, borderRadius: 20, borderWidth: 2, borderColor: colors.cyan400 }}>
-        <QRCode value={JSON.stringify(payload)} size={220} color={colors.navy900} backgroundColor={colors.white} />
+    <View style={{ flex: 1, backgroundColor: colors.brown700, padding: spacing.xl, justifyContent: 'center', alignItems: 'center', gap: spacing.xl }}>
+      <View style={{ backgroundColor: colors.white, padding: spacing.lg, borderRadius: 20, borderWidth: 2, borderColor: colors.orange400 }}>
+        <QRCode value={JSON.stringify(payload)} size={220} color={colors.brown700} backgroundColor={colors.white} />
       </View>
 
       <View style={{ alignItems: 'center', gap: spacing.xs }}>
         <Txt variant="title" color={colors.white}>{qr.name}</Txt>
         <Txt variant="display" color={colors.white}>{formatEuros(qr.amountInCents)}</Txt>
-        {!!qr.description && <Txt variant="body" color={colors.cyan400}>{qr.description}</Txt>}
+        {!!qr.description && <Txt variant="body" color={colors.orange400}>{qr.description}</Txt>}
       </View>
 
       <Badge status={qr.status === 'active' ? 'paid' : 'cancelled'} label={qr.status === 'active' ? 'Activo' : 'Inactivo'} />

@@ -13,7 +13,7 @@ function isNonEmptyId(value: unknown): value is string {
   return typeof value === 'string' && value.trim().length > 0 && value.length <= 200;
 }
 
-export function parseEricPayQr(raw: string): QrPayload | null {
+export function parsePropiQr(raw: string): QrPayload | null {
   let value: unknown;
   try {
     value = JSON.parse(raw);
