@@ -40,21 +40,21 @@ export default function GroupInviteScreen() {
     <Screen style={{ gap: spacing.xl }}>
       <ScreenHeader title="Invitar miembros" />
       <View style={{ gap: spacing.xs }}>
-        <Txt variant="display" color={colors.navy900} style={{ fontSize: 28 }}>{group.name}</Txt>
+        <Txt variant="display" color={colors.brown700} style={{ fontSize: 28 }}>{group.name}</Txt>
         <Txt variant="body" color={colors.gray500}>Genera un código nuevo y compártelo de forma privada.</Txt>
       </View>
       <Card style={{ gap: spacing.lg, alignItems: 'center', paddingVertical: spacing.xxl }}>
-        <View style={{ width: 56, height: 56, borderRadius: 20, backgroundColor: colors.yellow100, alignItems: 'center', justifyContent: 'center' }}>
-          <MaterialIcons name="vpn-key" size={28} color={colors.navy900} />
+        <View style={{ width: 56, height: 56, borderRadius: 20, backgroundColor: colors.peach100, alignItems: 'center', justifyContent: 'center' }}>
+          <MaterialIcons name="vpn-key" size={28} color={colors.brown700} />
         </View>
         {invite ? (
           <>
             <Txt variant="caption" color={colors.gray500}>CÓDIGO ACTIVO</Txt>
-            <Txt variant="display" color={colors.navy900} style={{ letterSpacing: 4, fontFamily: fonts.extrabold }}>{invite.code}</Txt>
+            <Txt variant="display" color={colors.brown700} style={{ letterSpacing: 4, fontFamily: fonts.extrabold }}>{invite.code}</Txt>
             <Button
               title="Compartir invitación"
               style={{ alignSelf: 'stretch' }}
-              onPress={() => Share.share({ message: `Únete a ${group.name} en EricPay con el código ${invite.code}: ${invite.link}` })}
+              onPress={() => Share.share({ message: `Únete a ${group.name} en Propi con el código ${invite.code}: ${invite.link}` })}
             />
             <Button title="Generar otro código" variant="outline" style={{ alignSelf: 'stretch' }} onPress={generate} disabled={loading} />
           </>

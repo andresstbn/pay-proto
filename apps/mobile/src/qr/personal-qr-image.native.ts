@@ -16,7 +16,7 @@ async function shareQrImage(imageUri: string, dialogTitle: string): Promise<Pers
 }
 
 export function sharePersonalQrImage(imageUri: string): Promise<PersonalQrImageOutcome> {
-  return shareQrImage(imageUri, 'Compartir mi QR de EricPay');
+  return shareQrImage(imageUri, 'Compartir mi QR de Propi');
 }
 
 export function shareGroupQrImage(imageUri: string, groupName: string): Promise<PersonalQrImageOutcome> {

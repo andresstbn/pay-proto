@@ -109,10 +109,10 @@ export default function PersonalQr() {
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.navy900 }}>
+    <View style={{ flex: 1, backgroundColor: colors.brown700 }}>
       <BrandHeader user={user} />
       <LinearGradient
-        colors={[colors.navy900, colors.navy700]}
+        colors={[colors.brown700, colors.orange500]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: spacing.xl }}
@@ -125,7 +125,7 @@ export default function PersonalQr() {
             borderRadius: 32,
             padding: spacing.xl,
             alignItems: 'center',
-            shadowColor: colors.cyan400,
+            shadowColor: colors.orange400,
             shadowOffset: { width: 0, height: 0 },
             shadowOpacity: 0.3,
             shadowRadius: 30,
@@ -138,12 +138,12 @@ export default function PersonalQr() {
               position: 'absolute',
               top: -24,
               alignSelf: 'center',
-              backgroundColor: colors.cyan400,
+              backgroundColor: colors.orange400,
               padding: spacing.md,
               borderRadius: 16,
             }}
           >
-            <MaterialIcons name="qr-code-2" size={24} color={colors.navy900} />
+            <MaterialIcons name="qr-code-2" size={24} color={colors.brown700} />
           </View>
 
           <View style={{ backgroundColor: colors.gray100, borderRadius: 16, padding: spacing.lg, marginTop: spacing.md, marginBottom: spacing.xl }}>
@@ -152,7 +152,7 @@ export default function PersonalQr() {
               ref={qrCaptureRef}
               style={{ backgroundColor: colors.white, borderRadius: 12, padding: spacing.md }}
             >
-              <QRCode value={JSON.stringify(payload)} size={190} color={colors.navy900} backgroundColor={colors.white} />
+              <QRCode value={JSON.stringify(payload)} size={190} color={colors.brown700} backgroundColor={colors.white} />
             </View>
           </View>
 
@@ -160,7 +160,7 @@ export default function PersonalQr() {
           <Txt variant="body" color={colors.gray500}>{handle}</Txt>
         </View>
 
-        <Txt variant="body" color={colors.cyan400} style={{ marginTop: spacing.xxl, textAlign: 'center', letterSpacing: 0.5 }}>
+        <Txt variant="body" color={colors.orange400} style={{ marginTop: spacing.xxl, textAlign: 'center', letterSpacing: 0.5 }}>
           Muestra este código para recibir un pago
         </Txt>
 

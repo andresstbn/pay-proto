@@ -1,20 +1,19 @@
 // Tokens de DESIGN.md — no inventar valores fuera de aquí.
 export const colors = {
-  navy900: '#0B1436',
-  navy700: '#16204F',
-  blue600: '#3057FF',
-  blue500: '#4A6BFF',
-  cyan400: '#5AD8F0',
-  yellow300: '#F6D98F',
-  yellow100: '#FBF0D6',
+  brown700: '#964900', // primario: botones, links, texto de marca, inicio del gradiente
+  brown500: '#86522B', // hover/estado secundario de brown700
+  orange500: '#FF851B', // naranja Propi: fin del gradiente, acentos de marca, logo
+  orange400: '#FFB787', // acento suave: bordes activos, glow, detalles sobre fondo oscuro
+  peach300: '#FFBB8B', // CTA cálido, badges destacados
+  peach100: '#FFDCC7', // fondo de badge/estado sobre peach300
   white: '#FFFFFF',
-  gray50: '#F7F8FC',
-  gray100: '#EEF1F8',
-  gray200: '#E1E5F0',
-  gray500: '#6B7280',
-  gray900: '#111827',
+  gray50: '#FCF9F8',
+  gray100: '#F0EDED',
+  gray200: '#E5E2E1',
+  gray500: '#574236',
+  gray900: '#1C1B1B',
   green500: '#2FB673',
-  red500: '#E5484D',
+  red500: '#BA1A1A',
 } as const;
 
 export const spacing = {
@@ -51,7 +50,7 @@ export const typography = {
 
 export const shadow = {
   card: {
-    shadowColor: colors.navy900,
+    shadowColor: colors.brown700,
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
     shadowRadius: 16,

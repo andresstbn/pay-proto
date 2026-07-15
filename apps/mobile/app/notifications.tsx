@@ -19,13 +19,13 @@ export default function NotificationSettingsScreen() {
         </Pressable>
         <View>
           <Txt variant="title" color={colors.white}>Notificaciones</Txt>
-          <Txt variant="caption" color={colors.cyan400}>Tú decides cómo avisamos</Txt>
+          <Txt variant="caption" color={colors.orange400}>Tú decides cómo avisamos</Txt>
         </View>
       </View>
       <View style={styles.card}>
         <PreferenceRow
           icon="volume-up"
-          title="Sonido EricPay"
+          title="Sonido Propi"
           description="Reproduce el aviso original al recibir dinero."
           value={preferences.soundEnabled}
           onValueChange={(value) => updatePreference('soundEnabled', value)}
@@ -40,7 +40,7 @@ export default function NotificationSettingsScreen() {
         />
       </View>
       <Txt variant="caption" color={colors.gray500} style={styles.note}>
-        Estos avisos funcionan mientras EricPay está abierta, incluso desde Expo Go.
+        Estos avisos funcionan mientras Propi está abierta, incluso desde Expo Go.
       </Txt>
       <Txt variant="caption" color={colors.gray500} style={styles.sectionLabel}>EXPERIENCIA</Txt>
       <Pressable
@@ -49,13 +49,13 @@ export default function NotificationSettingsScreen() {
         style={({ pressed }) => [styles.tourCard, pressed && styles.tourCardPressed]}
       >
         <View style={styles.tourIcon}>
-          <MaterialIcons name="auto-awesome" size={22} color={colors.cyan400} />
+          <MaterialIcons name="auto-awesome" size={22} color={colors.orange400} />
         </View>
         <View style={styles.copy}>
           <Txt variant="subtitle" color={colors.white}>Recorrido de bienvenida</Txt>
-          <Txt variant="caption" color={colors.gray200}>Descubre nuevamente lo esencial de EricPay.</Txt>
+          <Txt variant="caption" color={colors.gray200}>Descubre nuevamente lo esencial de Propi.</Txt>
         </View>
-        <MaterialIcons name="arrow-forward" size={21} color={colors.cyan400} />
+        <MaterialIcons name="arrow-forward" size={21} color={colors.orange400} />
       </Pressable>
     </Screen>
   );
@@ -71,12 +71,12 @@ function PreferenceRow({ icon, title, description, value, onValueChange, last = 
 }) {
   return (
     <View style={[styles.row, !last && styles.rowBorder]}>
-      <View style={styles.icon}><MaterialIcons name={icon} size={22} color={colors.blue600} /></View>
+      <View style={styles.icon}><MaterialIcons name={icon} size={22} color={colors.brown700} /></View>
       <View style={styles.copy}>
         <Txt variant="subtitle">{title}</Txt>
         <Txt variant="caption" color={colors.gray500}>{description}</Txt>
       </View>
-      <Switch value={value} onValueChange={onValueChange} trackColor={{ false: colors.gray200, true: colors.blue500 }} />
+      <Switch value={value} onValueChange={onValueChange} trackColor={{ false: colors.gray200, true: colors.brown500 }} />
     </View>
   );
 }
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    backgroundColor: colors.navy900,
+    backgroundColor: colors.brown700,
   },
   back: { padding: spacing.sm, marginLeft: -spacing.sm },
   card: { margin: spacing.lg, borderRadius: radius.card, backgroundColor: colors.white, overflow: 'hidden' },
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     borderRadius: radius.card,
-    backgroundColor: colors.navy900,
+    backgroundColor: colors.brown700,
   },
   tourCardPressed: { opacity: 0.88, transform: [{ scale: 0.99 }] },
   tourIcon: {
@@ -116,6 +116,6 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'rgba(90,216,240,0.12)',
+    backgroundColor: 'rgba(255,183,135,0.12)',
   },
 });

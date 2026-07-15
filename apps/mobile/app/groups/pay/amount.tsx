@@ -20,7 +20,7 @@ export default function GroupPayAmountScreen() {
       <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} style={{ flex: 1, padding: spacing.lg, gap: spacing.xl }}>
         <ScreenHeader title="Pago a grupo" />
         <View style={{ gap: spacing.xs }}>
-          <Txt variant="display" color={colors.navy900} style={{ fontSize: 28 }}>¿Cuánto quieres pagar?</Txt>
+          <Txt variant="display" color={colors.brown700} style={{ fontSize: 28 }}>¿Cuánto quieres pagar?</Txt>
           <Txt variant="body" color={colors.gray500}>Antes de confirmar verás cuántas personas recibirán el reparto.</Txt>
         </View>
         <Card style={{ gap: spacing.sm }}>
@@ -44,7 +44,7 @@ export default function GroupPayAmountScreen() {
               borderRadius: radius.card,
               borderWidth: 1,
               borderColor: colors.gray200,
-              color: colors.navy900,
+              color: colors.brown700,
               backgroundColor: colors.gray50,
               textAlign: 'center',
             }}

@@ -19,7 +19,7 @@ export default function ProfileScreen() {
   if (!user) {
     return (
       <Screen style={styles.loading}>
-        <ActivityIndicator color={colors.blue600} size="large" />
+        <ActivityIndicator color={colors.brown700} size="large" />
       </Screen>
     );
   }
@@ -49,7 +49,7 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={[styles.content, { paddingBottom: insets.bottom + spacing.xl }]}>
         <View style={styles.identityCard}>
           <Avatar user={user} size={82} style={styles.avatar} />
-          <Txt variant="title" color={colors.navy900} style={styles.name}>{user.displayName}</Txt>
+          <Txt variant="title" color={colors.brown700} style={styles.name}>{user.displayName}</Txt>
           <View style={styles.activeChip}>
             <View style={styles.activeDot} />
             <Txt variant="caption" color={colors.green500} style={styles.activeText}>Cuenta activa</Txt>
@@ -73,10 +73,10 @@ export default function ProfileScreen() {
           <View style={styles.card}>
             <View style={styles.infoRow}>
               <View style={styles.rowIcon}>
-                <MaterialIcons name="verified-user" size={21} color={colors.blue600} />
+                <MaterialIcons name="verified-user" size={21} color={colors.brown700} />
               </View>
               <View style={styles.rowCopy}>
-                <Txt variant="subtitle">EricPay</Txt>
+                <Txt variant="subtitle">Propi</Txt>
                 <Txt variant="caption" color={colors.gray500}>Escanea. Paga. Listo.</Txt>
               </View>
               <Txt variant="caption" color={colors.gray500}>v{appVersion}</Txt>
@@ -127,7 +127,7 @@ function ProfileRow({
       style={({ pressed }) => [styles.infoRow, pressed && styles.rowPressed]}
     >
       <View style={styles.rowIcon}>
-        <MaterialIcons name={icon} size={22} color={colors.blue600} />
+        <MaterialIcons name={icon} size={22} color={colors.brown700} />
       </View>
       <View style={styles.rowCopy}>
         <Txt variant="subtitle">{title}</Txt>
@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: colors.navy900,
+    backgroundColor: colors.brown700,
   },
   headerButton: {
     width: 40,
@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.gray200,
   },
-  avatar: { borderWidth: 3, borderColor: colors.cyan400 },
+  avatar: { borderWidth: 3, borderColor: colors.orange400 },
   name: { marginTop: spacing.lg, textAlign: 'center' },
   activeChip: {
     marginTop: spacing.sm,

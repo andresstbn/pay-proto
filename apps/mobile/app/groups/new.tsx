@@ -39,7 +39,7 @@ export default function CreateGroupScreen() {
       >
         <ScreenHeader title="Crear grupo" />
         <View style={{ gap: spacing.xs }}>
-          <Txt variant="display" color={colors.navy900} style={{ fontSize: 28 }}>Cobrar juntos, sin cuentas</Txt>
+          <Txt variant="display" color={colors.brown700} style={{ fontSize: 28 }}>Cobrar juntos, sin cuentas</Txt>
           <Txt variant="body" color={colors.gray500} style={{ lineHeight: 22 }}>
             Cada ingreso se dividirá entre las personas que estén activas en ese momento.
           </Txt>

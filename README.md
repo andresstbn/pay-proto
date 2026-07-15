@@ -1,6 +1,6 @@
-# EricPay 📱💳
+# Propi 📱💳
 
-EricPay es un prototipo funcional (Fase 1) de aplicación móvil de pagos simulados mediante códigos QR. El proyecto utiliza un backend en la nube con **Firebase (Authentication, Firestore y Cloud Functions)** y está organizado en un monorepo gestionado por **`pnpm workspaces`**.
+Propi (antes EricPay) es un prototipo funcional (Fase 1) de aplicación móvil de pagos simulados mediante códigos QR. El proyecto utiliza un backend en la nube con **Firebase (Authentication, Firestore y Cloud Functions)** y está organizado en un monorepo gestionado por **`pnpm workspaces`**.
 
 ---
 

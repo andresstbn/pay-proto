@@ -1,10 +1,10 @@
-# CLAUDE.md — EricPay
+# CLAUDE.md — Propi
 
 Guía de trabajo para Claude Code en este repo. Léela antes de tocar código.
 
 ## Qué es esto
 
-EricPay: app de pagos por QR. El alcance vigente en cada momento vive en `docs/` — hay
+Propi (antes EricPay): app de pagos por QR. El alcance vigente en cada momento vive en `docs/` — hay
 requerimientos funcionales (`docs/RF-*.md`) y specs de implementación (`docs/SPEC/SPEC-*.md`),
 numerados en orden. Antes de construir algo, revisa `docs/` para saber qué RF/SPEC está activo
 y qué fase del producto corresponde al código actual — no asumas que un RF o SPEC concreto

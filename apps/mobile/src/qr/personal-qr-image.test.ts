@@ -52,10 +52,10 @@ afterEach(() => {
 
 describe('personal QR image on native', () => {
   it('shares the captured PNG file instead of a text message', async () => {
-    await expect(shareNativeImage('file:///tmp/ericpay-qr.png')).resolves.toBe('shared');
+    await expect(shareNativeImage('file:///tmp/propi-qr.png')).resolves.toBe('shared');
 
-    expect(nativeMocks.share).toHaveBeenCalledWith('file:///tmp/ericpay-qr.png', {
-      dialogTitle: 'Compartir mi QR de EricPay',
+    expect(nativeMocks.share).toHaveBeenCalledWith('file:///tmp/propi-qr.png', {
+      dialogTitle: 'Compartir mi QR de Propi',
       mimeType: 'image/png',
       UTI: 'public.png',
     });
@@ -72,25 +72,25 @@ describe('personal QR image on native', () => {
   });
 
   it('requests write-only access before saving the PNG to the gallery', async () => {
-    await expect(saveNativeImage('file:///tmp/ericpay-qr.png')).resolves.toBe('saved');
+    await expect(saveNativeImage('file:///tmp/propi-qr.png')).resolves.toBe('saved');
 
     expect(nativeMocks.requestPermissions).toHaveBeenCalledWith(true, []);
-    expect(nativeMocks.saveToLibrary).toHaveBeenCalledWith('file:///tmp/ericpay-qr.png');
+    expect(nativeMocks.saveToLibrary).toHaveBeenCalledWith('file:///tmp/propi-qr.png');
   });
 
   it('does not save when photo write permission is denied', async () => {
     nativeMocks.requestPermissions.mockResolvedValue({ granted: false });
 
-    await expect(saveNativeImage('file:///tmp/ericpay-qr.png')).rejects.toThrow(
+    await expect(saveNativeImage('file:///tmp/propi-qr.png')).rejects.toThrow(
       'qr/permission-denied',
     );
     expect(nativeMocks.saveToLibrary).not.toHaveBeenCalled();
   });
 
   it('releases the temporary capture', () => {
-    releaseNativeImage('file:///tmp/ericpay-qr.png');
+    releaseNativeImage('file:///tmp/propi-qr.png');
 
-    expect(nativeMocks.releaseCapture).toHaveBeenCalledWith('file:///tmp/ericpay-qr.png');
+    expect(nativeMocks.releaseCapture).toHaveBeenCalledWith('file:///tmp/propi-qr.png');
   });
 
   it('releases a temporary group QR capture', () => {
@@ -123,7 +123,7 @@ describe('personal QR image on web', () => {
     await expect(saveWebImage('data:image/png;base64,abc')).resolves.toBe('saved');
 
     expect(link.href).toBe('data:image/png;base64,abc');
-    expect(link.download).toBe('ericpay-qr-personal.png');
+    expect(link.download).toBe('propi-qr-personal.png');
     expect(appendChild).toHaveBeenCalledWith(link);
     expect(link.click).toHaveBeenCalledOnce();
     expect(link.remove).toHaveBeenCalledOnce();
@@ -145,7 +145,7 @@ describe('personal QR image on web', () => {
     await expect(shareWebGroupImage('data:image/png;base64,group', 'Viaje')).resolves.toBe('downloaded');
 
     expect(link.href).toBe('data:image/png;base64,group');
-    expect(link.download).toBe('ericpay-qr-grupo.png');
+    expect(link.download).toBe('propi-qr-grupo.png');
     expect(link.click).toHaveBeenCalledOnce();
   });
 });

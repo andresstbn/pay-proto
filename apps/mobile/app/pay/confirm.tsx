@@ -101,7 +101,7 @@ export default function Confirm() {
       ) : (
         <>
           <Card style={{ gap: spacing.sm, alignItems: 'center', paddingVertical: spacing.xl }}>
-            <Avatar user={recipient} size={64} style={{ borderWidth: 1.5, borderColor: colors.cyan400 }} />
+            <Avatar user={recipient} size={64} style={{ borderWidth: 1.5, borderColor: colors.orange400 }} />
             <View style={{ alignItems: 'center', marginTop: spacing.xs }}>
               <Txt variant="caption" color={colors.gray500}>Vas a pagar a</Txt>
               <Txt variant="subtitle" style={{ fontWeight: '700', fontSize: 18 }}>{recipient!.displayName}</Txt>

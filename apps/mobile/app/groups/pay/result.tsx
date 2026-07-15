@@ -51,7 +51,7 @@ export default function GroupPayResultScreen() {
           <MaterialIcons name="check" size={42} color={colors.green500} />
         </View>
         <Badge status="paid" label="Pago repartido" />
-        <Txt variant="display" color={colors.navy900}>{formatEuros(amountInCents)}</Txt>
+        <Txt variant="display" color={colors.brown700}>{formatEuros(amountInCents)}</Txt>
         <Txt variant="body" color={colors.gray500}>a {params.groupName}</Txt>
       </View>
       <Card style={{ gap: spacing.md }}>

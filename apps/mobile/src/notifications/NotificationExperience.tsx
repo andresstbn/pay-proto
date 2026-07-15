@@ -149,13 +149,13 @@ function TransferBanner({ notice, onDismiss }: { notice: TransferNotice; onDismi
       >
         <View style={styles.badge}><Txt variant="title" color={colors.white}>E</Txt></View>
         <View style={styles.bannerCopy}>
-          <Txt variant="caption" color={colors.cyan400}>{notice.groupName ? 'REPARTO RECIBIDO' : 'TRANSFERENCIA RECIBIDA'}</Txt>
+          <Txt variant="caption" color={colors.orange400}>{notice.groupName ? 'REPARTO RECIBIDO' : 'TRANSFERENCIA RECIBIDA'}</Txt>
           <Txt variant="subtitle" color={colors.white}>{formatEuros(notice.amountInCents)}</Txt>
           <Txt variant="caption" color={colors.gray200}>
             {notice.groupName ? `${notice.groupName} · De ${notice.payerName}` : `De ${notice.payerName}`}
           </Txt>
         </View>
-        <Txt variant="caption" color={colors.cyan400}>Ver</Txt>
+        <Txt variant="caption" color={colors.orange400}>Ver</Txt>
       </Pressable>
     </Animated.View>
   );
@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
     padding: spacing.md,
     borderRadius: radius.card,
     borderWidth: 1,
-    borderColor: 'rgba(90,216,240,0.35)',
-    backgroundColor: colors.navy700,
+    borderColor: 'rgba(255,183,135,0.35)',
+    backgroundColor: colors.orange500,
     ...shadow.card,
   },
   badge: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.blue600,
+    backgroundColor: colors.brown700,
   },
   bannerCopy: { flex: 1, gap: 1 },
 });

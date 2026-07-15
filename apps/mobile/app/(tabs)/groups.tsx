@@ -19,7 +19,7 @@ export default function GroupsTab() {
       <BrandHeader user={user} />
       <ScrollView contentContainerStyle={{ padding: spacing.lg, paddingBottom: spacing.xxxl, gap: spacing.xl }}>
         <View style={{ gap: spacing.xs }}>
-          <Txt variant="display" color={colors.navy900} style={{ fontSize: 28 }}>Tus grupos</Txt>
+          <Txt variant="display" color={colors.brown700} style={{ fontSize: 28 }}>Tus grupos</Txt>
           <Txt variant="body" color={colors.gray500}>Cobra en equipo y reparte cada ingreso automáticamente.</Txt>
         </View>
 
@@ -57,7 +57,7 @@ export default function GroupsTab() {
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: spacing.md }}>
                       <GroupMark name={group.name} />
                       <View style={{ flex: 1, gap: spacing.xs }}>
-                        <Txt variant="subtitle" color={colors.navy900}>{group.name}</Txt>
+                        <Txt variant="subtitle" color={colors.brown700}>{group.name}</Txt>
                         <RoleBadge role={role} />
                       </View>
                       <MaterialIcons name="chevron-right" size={24} color={colors.gray500} />
@@ -77,8 +77,8 @@ export default function GroupsTab() {
           </View>
         )}
 
-        <Card style={{ flexDirection: 'row', gap: spacing.md, backgroundColor: colors.navy900, borderWidth: 0 }}>
-          <MaterialIcons name="info-outline" size={22} color={colors.cyan400} />
+        <Card style={{ flexDirection: 'row', gap: spacing.md, backgroundColor: colors.brown700, borderWidth: 0 }}>
+          <MaterialIcons name="info-outline" size={22} color={colors.orange400} />
           <Txt variant="caption" color={colors.gray200} style={{ flex: 1, lineHeight: 19 }}>
             Solo los miembros activos reciben parte del siguiente ingreso. Puedes pausar tu participación cuando quieras.
           </Txt>
@@ -109,8 +109,8 @@ function QuickAction({ icon, label, onPress }: { icon: keyof typeof MaterialIcon
         pressed && { opacity: 0.75, transform: [{ scale: 0.98 }] },
       ]}
     >
-      <MaterialIcons name={icon} size={28} color={colors.blue600} />
-      <Txt variant="caption" color={colors.navy900} style={{ fontFamily: fonts.bold }}>{label}</Txt>
+      <MaterialIcons name={icon} size={28} color={colors.brown700} />
+      <Txt variant="caption" color={colors.brown700} style={{ fontFamily: fonts.bold }}>{label}</Txt>
     </Pressable>
   );
 }

@@ -49,9 +49,9 @@ const SOCIAL_BUTTONS: Array<{
   {
     provider: 'facebook',
     icon: 'logo-facebook',
-    backgroundColor: colors.blue600,
+    backgroundColor: '#1877F2', // azul de marca de Facebook, no un token del tema
     foregroundColor: colors.white,
-    borderColor: colors.blue600,
+    borderColor: '#1877F2',
   },
   {
     provider: 'apple',
@@ -128,8 +128,8 @@ export default function Login() {
 
   return (
     <LinearGradient
-      colors={[colors.navy900, colors.navy700, colors.blue600]}
-      locations={[0, 0.64, 1]}
+      colors={[colors.brown700, colors.orange500]}
+      locations={[0, 1]}
       style={styles.background}
     >
       <KeyboardAvoidingView
@@ -154,24 +154,21 @@ export default function Login() {
               <View style={styles.markShell}>
                 <Image
                   accessibilityIgnoresInvertColors
-                  source={require('../assets/brand/ericpay-mark.png')}
+                  source={require('../assets/brand/propi-mark.png')}
                   style={styles.mark}
                 />
               </View>
               <View style={styles.wordmarkRow}>
-                <Txt variant="display" color={colors.white} style={styles.wordmark}>EricPay</Txt>
-                <View style={styles.demoBadge}>
-                  <Txt variant="caption" color={colors.navy900} style={styles.demoBadgeText}>DEMO</Txt>
-                </View>
+                <Txt variant="display" color={colors.white} style={styles.wordmark}>Propi</Txt>
               </View>
-              <Txt variant="body" color={colors.cyan400} style={styles.tagline}>
-                Tu dinero ficticio, a un toque de distancia
+              <Txt variant="body" color={colors.peach100} style={styles.tagline}>
+                Tu dinero, a un toque de distancia
               </Txt>
             </View>
 
             <View style={[styles.card, compact && styles.cardCompact]}>
               <View style={styles.cardHeading}>
-                <Txt variant="title" color={colors.navy900} style={styles.cardTitle}>Entra en segundos</Txt>
+                <Txt variant="title" color={colors.brown700} style={styles.cardTitle}>Entra en segundos</Txt>
                 <Txt variant="body" color={colors.gray500} style={styles.cardSubtitle}>
                   Entra con tu correo y contraseña. También puedes usar tu cuenta favorita.
                 </Txt>
@@ -310,11 +307,11 @@ export default function Login() {
                   <Ionicons
                     name={feedback.tone === 'info' ? 'information-circle-outline' : 'alert-circle-outline'}
                     size={20}
-                    color={feedback.tone === 'info' ? colors.blue600 : colors.red500}
+                    color={feedback.tone === 'info' ? colors.brown700 : colors.red500}
                   />
                   <Txt
                     variant="caption"
-                    color={feedback.tone === 'info' ? colors.navy900 : colors.red500}
+                    color={feedback.tone === 'info' ? colors.brown700 : colors.red500}
                     style={styles.feedbackText}
                   >
                     {feedback.message}
@@ -324,9 +321,9 @@ export default function Login() {
             </View>
 
             <View style={styles.securityNote}>
-              <Ionicons name="shield-checkmark-outline" size={17} color={colors.cyan400} />
+              <Ionicons name="shield-checkmark-outline" size={17} color={colors.orange400} />
               <Txt variant="caption" color={colors.white} style={styles.securityText}>
-                Acceso protegido por Firebase · Sin dinero real
+                Pagos protegidos y cifrados
               </Txt>
             </View>
           </View>
@@ -406,8 +403,8 @@ const styles = StyleSheet.create({
   },
   markShell: {
     alignItems: 'center',
-    backgroundColor: colors.navy700,
-    borderColor: colors.cyan400,
+    backgroundColor: colors.white,
+    borderColor: colors.orange400,
     borderRadius: 38,
     borderWidth: 1,
     height: 76,
@@ -427,17 +424,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.extrabold,
     fontSize: 38,
     letterSpacing: -1.2,
-  },
-  demoBadge: {
-    backgroundColor: colors.yellow300,
-    borderRadius: radius.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xs,
-  },
-  demoBadgeText: {
-    fontFamily: fonts.bold,
-    fontSize: 10,
-    letterSpacing: 0.8,
   },
   tagline: {
     textAlign: 'center',
@@ -516,7 +502,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
   },
   inputShellFocused: {
-    borderColor: colors.blue600,
+    borderColor: colors.brown700,
     borderWidth: 2,
     paddingHorizontal: spacing.md - 1,
   },
@@ -529,7 +515,7 @@ const styles = StyleSheet.create({
   },
   emailButton: {
     alignItems: 'center',
-    backgroundColor: colors.blue600,
+    backgroundColor: colors.brown700,
     borderRadius: radius.card,
     flexDirection: 'row',
     gap: spacing.sm,
@@ -551,7 +537,7 @@ const styles = StyleSheet.create({
   },
   feedbackInfo: {
     backgroundColor: colors.gray50,
-    borderColor: colors.blue500,
+    borderColor: colors.brown500,
   },
   feedbackError: {
     backgroundColor: colors.gray50,

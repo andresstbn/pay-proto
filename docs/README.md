@@ -1,4 +1,4 @@
-# Mapa de producto y documentación — EricPay
+# Mapa de producto y documentación — Propi
 
 Este índice separa el alcance pedido, las decisiones tomadas y la evidencia de
 que un incremento quedó realmente operativo. La numeración es acumulativa: una
